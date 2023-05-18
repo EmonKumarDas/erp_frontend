@@ -4,7 +4,7 @@ import Breadcrumb from '../components/Breadcrumb';
 import ChartFour from '../components/ChartFour';
 import ChartOne from '../components/ChartOne';
 import ChartTwo from '../components/ChartTwo';
-import ChartThree from '../components/ChartThree';
+
 
 const Chart = () => {
   return (
@@ -17,7 +17,7 @@ const Chart = () => {
         </div>
         <ChartOne />
         <ChartTwo />
-        <ChartThree />
+  
       </div>
     </DefaultLayout>
   )
