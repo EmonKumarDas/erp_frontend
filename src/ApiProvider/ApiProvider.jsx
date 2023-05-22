@@ -53,6 +53,50 @@ export const ApiProvider = ({ children }) => {
   }
 
   // ------------------------------end of post company----------------------------------------
+  const handleShop = (e) => {
+    e.preventDefault();
+    const shopname = e.target.name.value;
+    const location = e.target.location.value;
+
+    const shop = {
+      shopname,
+      location,
+    }
+
+    setLoading(true);
+    fetch("http://localhost:5000/addshop", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(shop)
+    }).then(res => res.json()).then(result => {
+      e.target.reset();
+      setLoading(false)
+    })
+
+  }
+
+  // ------------------------------end of Add shop----------------------------------------
+const [shop,setShop] = useState([]);
+  useEffect(() => {
+    setLoading(true);
+    const fetchData = async () => {
+      const response = await fetch('http://localhost:5000/getshop');
+      const result = await response.json();
+      setShop(result);
+      setLoading(false);
+
+    };
+    fetchData();
+    const interval = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+  // ------------------------------end of get shop----------------------------------------
+
   const [allcompany, setAllcompany] = useState([]);
   useEffect(() => {
     fetch("http://localhost:5000/getCompany").then(res => res.json()).then(result => {
@@ -207,10 +251,10 @@ export const ApiProvider = ({ children }) => {
             .catch(error => {
               console.error(error);
             });
-          location.reload();
+
         }
         else {
-          toast("you don't have much data")
+          toast("you don't have much Product")
         }
 
 
@@ -305,7 +349,7 @@ export const ApiProvider = ({ children }) => {
     return accumulator + parseInt(currentValue.quantity);
   }, 0);
 
-  // ----------------------------end of total purchase products price----------------------------------------
+  // ----------------------------end of total totalProduct---------------------------------------
 
   const StockOut = bills.reduce((acc, curr) => {
     return acc + curr.products.reduce((total, product) => {
@@ -442,13 +486,30 @@ export const ApiProvider = ({ children }) => {
 
   // -------------------------------------pay employees bill--------------------------------------- 
 
+  function getMonthName(number) {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
 
+    // Subtracting 1 from the number to match the array index
+    const index = number - 1;
+
+    // Checking if the index is within the valid range
+    if (index >= 0 && index < months.length) {
+      return months[index];
+    } else {
+      return 'Invalid month number';
+    }
+  }
+
+  // ----------------------------------get months-------------------------------------------
 
   return (
     <ApiContext.Provider value={{
       bill, data, googleSign, selectedProduct, formData, employees, isModalOpen,
-      setIsModalOpen, handlePayBill,
-      handleProductChange, ProductData, handleCompany, handleChangedata,
+      setIsModalOpen, handlePayBill, setLoading,shop,
+      handleProductChange, ProductData, handleCompany, handleChangedata, getMonthName,handleShop,
       handleEmploy, ProductData, allcompany, totalProduct, StockOut, loading, totalPurchasePrice, totalSell, handleGetProduct, handleProductDelete, handleBillMemo, handleBillcreating, codeData, selectedCode, customarbills, handleCodeChange, getBillByID
     }}>
       {children}

@@ -52,7 +52,9 @@ function BillsTable() {
                                                     <Link to={`/bills/${product._id}`} className="ml-2">
                                                         <td className="border hover:bg-black cursor-pointer font-extrabold text-warning px-4 py-2">View</td>
                                                     </Link>
+                                                    
                                             }
+                                            <td className="border hover:bg-black cursor-pointer font-extrabold text-warning px-4 py-2">View</td>
                                         </tr>
                                     ))}
 

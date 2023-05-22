@@ -4,6 +4,7 @@ import DefaultLayout from '../layout/DefaultLayout'
 import { ApiContext } from '../ApiProvider/ApiProvider'
 import Modal from '../Employ Management/Modal'
 import CircleLoader from './CircleLoader'
+import { Link } from 'react-router-dom'
 
 
 const ChatCard = () => {
@@ -44,7 +45,9 @@ const ChatCard = () => {
                     </div>
                   </div>
                   <button onClick={() => handlePayClick(employ._id)} className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>PAY</button>
-                  <button className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
+                  <Link to={`/details/${employ.number}`}>
+                  <button  className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
+                  </Link>
                   <button className='bg-meta-5 text-white px-4 py-2 my-2 rounded font-bold'>EDIT</button>
                 </a>
               </div>

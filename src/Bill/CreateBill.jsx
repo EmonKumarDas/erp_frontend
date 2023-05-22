@@ -43,7 +43,7 @@ const CreateBill = () => {
                                 required
                                 className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                 name="code"
-                                value={!selectedCode? selectedProduct?.barcode:selectedCode}
+                                value={!selectedCode ? selectedProduct?.barcode : selectedCode}
                                 onChange={handleProdcutCodeChange}
                             >
                                 <option selected>Select Product's Code</option>
@@ -83,7 +83,7 @@ const CreateBill = () => {
                                 required
                                 className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                 name="watt"
-                               
+
                             >
                                 <option selected>Select Watt </option>
                                 {data.map((product) => (
@@ -96,7 +96,7 @@ const CreateBill = () => {
 
                         <div>
                             <label className='mb-3 block text-black dark:text-white'>
-                                Purchased Product's Price
+                                Product's Price
                             </label>
                             <input
 
@@ -104,7 +104,7 @@ const CreateBill = () => {
                                 name='PurchasePrice'
                                 defaultValue={!codeData?.singleproductprice ? ProductData?.singleproductprice : codeData?.singleproductprice}
                                 type='text'
-                                placeholder='Purchased Product Price'
+                                placeholder='Product Price'
                                 className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
 
                             />
@@ -144,7 +144,7 @@ const CreateBill = () => {
                 </div>
                 <CashMemo></CashMemo>
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </DefaultLayout>
     );
 };

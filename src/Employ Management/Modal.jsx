@@ -3,8 +3,10 @@ import { ApiContext } from '../ApiProvider/ApiProvider';
 
 const Modal = ({ employData }) => {
     const { isModalOpen, setIsModalOpen, handlePayBill, loading } = useContext(ApiContext);
+
     const handlePayBillform = (e) => {
         handlePayBill(e)
+
     }
     return (
         <div>

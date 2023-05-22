@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Analytics from './pages/Dashboard/Analytics'
 import Calendar from './pages/Calendar'
-import Profile from './pages/Profile'
+import Profile from './Employ Management/Profile'
 import FormElements from './pages/Form/FormElements'
 import Settings from './pages/Settings'
 import Chart from './pages/Chart'
@@ -23,6 +23,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import AllProduct from './pages/Product_management/AllProduct'
 import AddEmploy from './Employ Management/AddEmploy'
 import ChatCard from './components/ChatCard'
+import AddShop from './Employ Management/AddShop'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -55,10 +56,16 @@ const App = () => {
             <Route path='/bill' element={<PrivateRoute><CreateBill /></PrivateRoute>} />
             <Route path='/print' element={<PrivateRoute><Print /></PrivateRoute>} />
             <Route path='/manageEmploy' element={<PrivateRoute><ChatCard /></PrivateRoute>} />
+            <Route path='/addshop' element={<PrivateRoute><AddShop /></PrivateRoute>} />
 
             <Route
               path='/bills/:id'
               element={<PrivateRoute><ViewBill></ViewBill></PrivateRoute>}
+            />
+
+            <Route
+              path='/details/:id'
+              element={<PrivateRoute><Profile></Profile></PrivateRoute>}
             />
 
             <Route path='/productcategory' element={<ProductsCategory />} />
