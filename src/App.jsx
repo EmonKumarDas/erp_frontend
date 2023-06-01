@@ -24,6 +24,7 @@ import AllProduct from './pages/Product_management/AllProduct'
 import AddEmploy from './Employ Management/AddEmploy'
 import ChatCard from './components/ChatCard'
 import AddShop from './Employ Management/AddShop'
+import PrintInstant from './Bill/PrintInstant'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -55,6 +56,7 @@ const App = () => {
             <Route path='/addproduct' element={<PrivateRoute><AddProduct /></PrivateRoute>} />
             <Route path='/bill' element={<PrivateRoute><CreateBill /></PrivateRoute>} />
             <Route path='/print' element={<PrivateRoute><Print /></PrivateRoute>} />
+            <Route path='/printinstant' element={<PrivateRoute><PrintInstant /></PrivateRoute>} />
             <Route path='/manageEmploy' element={<PrivateRoute><ChatCard /></PrivateRoute>} />
             <Route path='/addshop' element={<PrivateRoute><AddShop /></PrivateRoute>} />
 

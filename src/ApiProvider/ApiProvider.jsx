@@ -78,7 +78,7 @@ export const ApiProvider = ({ children }) => {
   }
 
   // ------------------------------end of Add shop----------------------------------------
-const [shop,setShop] = useState([]);
+  const [shop, setShop] = useState([]);
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
@@ -210,7 +210,7 @@ const [shop,setShop] = useState([]);
     const SellPrice = TotalPrice - DiscountAmount
     const total = SellPrice;
 
-    await fetch(`http://localhost:5000/getProductsByProductName/${productname}`)
+    await fetch(` http://localhost:5000/getProductsByProductNameAndWatt/${productname}/${watt}`)
       .then(res => res.json())
       .then(result => {
         setProductCode(result);
@@ -246,7 +246,7 @@ const [shop,setShop] = useState([]);
           })
             .then(response => response.json())
             .then(data => {
-              console.log(data);
+
             })
             .catch(error => {
               console.error(error);
@@ -263,22 +263,31 @@ const [shop,setShop] = useState([]);
   };
 
 
-  // --------------------------------------end handle bill create------------------------------
+  // -------------------------end handle bill create---------------------------
 
   const handleBillMemo = (e, products, total) => {
     e.preventDefault();
     const name = e.target.name.value;
     const phonenumber = e.target.phonenumber.value;
-    const advance = e.target.advance.value;
+    const advance = parseInt(e.target.advance.value);
     const location = e.target.location.value;
+    const shopname = e.target.shopname.value;
+    const now = new Date();
+    const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const userData = {
-      name, location, phonenumber, advance, newbalance: total - advance, total,
+      name, location, phonenumber, date, advance, shopname, newbalance: parseInt(total - advance), total,
     }
 
     const mergedObject = {
       ...userData,
       "products": products
     };
+
+    // Convert mergedObject to JSON string
+    const mergedObjectString = JSON.stringify(mergedObject);
+
+    // Store the mergedObjectString in localStorage
+    localStorage.setItem('mergedData', mergedObjectString);
 
     setLoading(true)
     fetch("http://localhost:5000/createBill", {
@@ -291,10 +300,9 @@ const [shop,setShop] = useState([]);
       .then(res => res.json())
       .then(result => {
         setLoading(false)
-        window.location.replace('/print')
+        window.location.replace('/printinstant')
       })
       .catch(error => {
-        console.error(error);
         setLoading(false)
       });
   }
@@ -318,7 +326,7 @@ const [shop,setShop] = useState([]);
       })
   }, [])
 
-  // ----------------end of print bill-----------------------------------
+  // ---------------------------------end of print bill-----------------------------------
 
   const [bills, setBills] = useState([]);
   useEffect(() => {
@@ -337,7 +345,7 @@ const [shop,setShop] = useState([]);
     }
   }, 0);
 
-  // ----------------------------end of get all the sells products amount------------------------------------
+  // -----------------------end of get all the sells products amount------------------------------------
 
   const totalPurchasePrice = data.reduce((accumulator, currentValue) => {
     return accumulator + parseInt(currentValue.purchaseprice);
@@ -390,9 +398,27 @@ const [shop,setShop] = useState([]);
   // -------------------------------------googleSignIn----------------------------------------
 
   const [customarbills, SetBills] = useState([]);
+
   useEffect(() => {
-    fetch("http://localhost:5000/getBill").then(res => res.json()).then(result => SetBills(result))
-  }, [])
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/getBill");
+        const result = await response.json();
+        SetBills(result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+
+    const interval = setInterval(fetchData, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
   // --------------------------------get created bills data----------------------------------
   const getBillByID = (id) => {
     return fetch(`http://localhost:5000/getbills/${id}`)
@@ -505,12 +531,135 @@ const [shop,setShop] = useState([]);
 
   // ----------------------------------get months-------------------------------------------
 
+  const handleUpdatePaybill = (e, customarbill) => {
+    e.preventDefault();
+    const advance = parseInt(e.target.advance.value);
+    const newbalance = customarbill?.newbalance - advance;
+    const totalpay = customarbill?.advance + advance;
+
+    const paybill = { advance: totalpay, newbalance };
+    console.log(paybill);
+    setLoading(true);
+    fetch(`http://localhost:5000/UpdateProductbill/${customarbill?._id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paybill),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error updating paybill.");
+        }
+        return res.json();
+      })
+      .then((result) => {
+        setLoading(false);
+        console.log(result);
+        setIsModalOpen(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  };
+
+  // -------------------------------------update customar bill--------------------------------------- 
+
+  const [getTotalSaleByDate, setGetTotalSaleByDate] = useState([]);
+  const now = new Date();
+  const month = `${now.getFullYear()}-${now.getMonth() + 1}`;
+  fetch(`http://localhost:5000/getBillByDate/${month}`).then(res => res.json()).then(result => {
+    let totalAdvance = 0;
+    for (let i = 0; i < result.length; i++) {
+      totalAdvance += result[i].advance;
+    }
+    if (totalAdvance > 1000) {
+      const simplifiedTotal = Math.floor(totalAdvance / 1000);
+      setGetTotalSaleByDate(simplifiedTotal + "k");
+    }
+    else {
+      setGetTotalSaleByDate(totalAdvance)
+    }
+  })
+  // --------------------------------get Total Income By Date-------------------------------------
+
+  const [getTotalProductByDate, setGetTotalProductByDate] = useState([]);
+  fetch(`http://localhost:5000/getproductbydate/${month}`).then(res => res.json()).then(result => {
+    let totalAdvance = 0;
+    for (let i = 0; i < result.length; i++) {
+      totalAdvance += result[i].purchaseprice
+        ;
+    }
+    if (totalAdvance > 1000) {
+      const simplifiedTotal = Math.floor(totalAdvance / 1000);
+      setGetTotalProductByDate(simplifiedTotal + "k");
+    }
+    else {
+      setGetTotalProductByDate(totalAdvance)
+    }
+  })
+  // --------------------------------get Total Product purchase price By Date-------------------------------------
+
+
+
+  // const [getTotalIncomeByDate, setGetTotalIncomeByDate] = useState([]);
+  // fetch(`http://localhost:5000/getproductbydate/${month}`).then(res => res.json()).then(result => {
+  //   let totalAdvance = 0;
+  //   for (let i = 0; i < result.length; i++) {
+  //     totalAdvance += result[i].purchaseprice
+  //       ;
+  //   }
+  //   if (totalAdvance > 1000) {
+  //     const simplifiedTotal = Math.floor(totalAdvance / 1000);
+  //     setGetTotalIncomeByDate(simplifiedTotal + "k");
+  //   }
+  //   else {
+  //     setGetTotalIncomeByDate(totalAdvance)
+  //   }
+  // })
+  // // --------------------------------get Total Total income By Date-------------------------------------
+
   return (
     <ApiContext.Provider value={{
-      bill, data, googleSign, selectedProduct, formData, employees, isModalOpen,
-      setIsModalOpen, handlePayBill, setLoading,shop,
-      handleProductChange, ProductData, handleCompany, handleChangedata, getMonthName,handleShop,
-      handleEmploy, ProductData, allcompany, totalProduct, StockOut, loading, totalPurchasePrice, totalSell, handleGetProduct, handleProductDelete, handleBillMemo, handleBillcreating, codeData, selectedCode, customarbills, handleCodeChange, getBillByID
+      bill,
+      data,
+      googleSign,
+      selectedProduct,
+      formData,
+      employees,
+      isModalOpen,
+      setIsModalOpen,
+      handlePayBill,
+      setLoading,
+      getTotalSaleByDate,
+      
+      getTotalProductByDate,
+      shop,
+      handleUpdatePaybill,
+      handleProductChange,
+      ProductData,
+      handleCompany,
+      handleChangedata,
+      getMonthName,
+      handleShop,
+      handleEmploy,
+      ProductData,
+      allcompany,
+      totalProduct,
+      StockOut,
+      loading,
+      totalPurchasePrice,
+      totalSell,
+      handleGetProduct,
+      handleProductDelete,
+      handleBillMemo,
+      handleBillcreating,
+      codeData,
+      selectedCode,
+      customarbills,
+      handleCodeChange,
+      getBillByID
     }}>
       {children}
     </ApiContext.Provider>

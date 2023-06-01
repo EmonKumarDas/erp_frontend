@@ -28,9 +28,6 @@ function Table() {
                                     <th className="px-4 text-left">Watt</th>
                                     <th className="px-4 text-left">Quantity</th>
                                     <th className="px-4 text-left">Price</th>
-                                    <th className="px-4 text-left">Action</th>
-                                    <th className="px-4 text-left"></th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -47,19 +44,7 @@ function Table() {
                                         <td className="border px-4 py-2">{product.watt}</td>
                                         <td className="border px-4 py-2">{product.quantity}</td>
                                         <td className="border px-4 py-2">{product.purchaseprice}</td>
-                                        {loading ? (
-                                            <CircleLoader />
-                                        ) : (
-                                            <td
-                                                onClick={() => ClickDelete(product._id)}
-                                                className="border hover:bg-black cursor-pointer font-extrabold text-danger px-4 py-2"
-                                            >
-                                                DELETE
-                                            </td>
-                                        )}
-                                        <td className="border hover:bg-black cursor-pointer font-extrabold text-primary px-4 py-2">
-                                            EDIT
-                                        </td>
+
                                     </tr>
                                 ))}
 
