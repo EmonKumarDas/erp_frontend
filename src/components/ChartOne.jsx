@@ -1,9 +1,16 @@
-import React, { Component } from 'react';
-import ReactApexChart from 'react-apexcharts'
+import React, { Component, useContext, useEffect } from 'react';
+import ReactApexChart from 'react-apexcharts';
+import { ApiContext } from '../ApiProvider/ApiProvider';
 
 class ChartOne extends Component {
+
+  static contextType = ApiContext;
+  componentDidMount() {
+    const { getTotalRevenueByDate } = this.context;
+    console.log(getTotalRevenueByDate / 100);
+  }
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       series: [
@@ -11,7 +18,6 @@ class ChartOne extends Component {
           name: 'Product One',
           data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
         },
-
         {
           name: 'Product Two',
           data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
@@ -36,7 +42,6 @@ class ChartOne extends Component {
             left: 0,
             opacity: 0.1,
           },
-
           toolbar: {
             show: false,
           },
@@ -129,8 +134,10 @@ class ChartOne extends Component {
           max: 100,
         },
       },
-    }
+    };
   }
+
+
 
   render() {
     return (
@@ -182,7 +189,7 @@ class ChartOne extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

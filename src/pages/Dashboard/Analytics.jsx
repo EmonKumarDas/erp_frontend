@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import CardOne from '../../components/CardOne';
 import ChartOne from '../../components/ChartOne';
@@ -6,7 +6,8 @@ import ChartTwo from '../../components/ChartTwo';
 import { ApiContext } from '../../ApiProvider/ApiProvider';
 
 const Analytics = () => {
-  const { totalSell, getTotalProductByDate, getTotalSaleByDate, totalPurchasePrice, totalProduct, StockOut } = useContext(ApiContext)
+  const { getTotalRevenueByDate, getTotalExpenseByDateInInteger, getTotalExpenseByDate, getTotalProductByDate, getTotalSaleByDate, totalPurchasePrice, totalProduct, StockOut } = useContext(ApiContext)
+  const netProfit = (getTotalRevenueByDate - getTotalExpenseByDateInInteger);
 
   return (
     <DefaultLayout>
@@ -14,32 +15,15 @@ const Analytics = () => {
         <CardOne
           title="Revenue"
           amount={getTotalSaleByDate + "৳"}
-          percentage="30%"
         ></CardOne>
         <CardOne
           title="Total Purchase"
-          amount={getTotalProductByDate + "৳"}
-          percentage="40%"
+          amount={getTotalProductByDate === "" ? getTotalProductByDate : "0" + "৳"}
         ></CardOne>
         <CardOne
-          title="Total Revenue"
-          amount={getTotalProductByDate + "৳"}
-          percentage="40%"
+          title="Net Profit"
+          amount={netProfit > 1000 ? (netProfit / 1000).toFixed(1) + "k" : netProfit + "৳"}
         ></CardOne>
-        <CardOne
-          title="Total Income"
-          amount="200৳"
-          percentage="40%"
-        ></CardOne>
-        {/* <CardOne
-          title="Total Expense"
-          amount="200৳"
-          percentage="40%"
-        ></CardOne> */}
-        {/* <CardOne
-          title="Total Products"
-          amount={totalProduct}
-        ></CardOne> */}
         <CardOne
           title="Stock In"
           amount={totalProduct}
@@ -56,7 +40,7 @@ const Analytics = () => {
         <ChartTwo />
 
       </div>
-    </DefaultLayout>
+    </DefaultLayout >
   )
 }
 

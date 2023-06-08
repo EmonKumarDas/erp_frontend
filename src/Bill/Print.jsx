@@ -20,7 +20,7 @@ function Print() {
             <div ref={componentRef} >
                 <div className="flex justify-between">
                     <div className='p-4'>
-                        <h1 className="text-black-2 text-3xl font-bold mb-2">Shajalal Lighting</h1>
+                        <h1 className="text-black-2 text-3xl font-bold mb-2">{bill?.shopname}</h1>
                         <p className="text-black-2 text-sm">All kinds of electric goods whole saler and retailer</p>
                         <p className="text-black-2 text-sm mt-1">119/24, Foyez Electric Market, Nandankanan, Chittagong</p>
                         <p className="text-black-2 text-sm">Mobile: 01846378948</p>
@@ -34,15 +34,15 @@ function Print() {
                 <div className="p-4">
                     <div className="flex justify-between items-center">
 
-                        <input type="text" defaultValue={bill.name} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
+                        <input type="text" defaultValue={bill?.name} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
                     </div>
                     <div className="flex justify-between items-center mt-2">
 
-                        <input type="text" defaultValue={bill.phonenumber} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
+                        <input type="text" defaultValue={bill?.phonenumber} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
                     </div>
                     <div className="flex justify-between items-center mt-2">
 
-                        <input type="text" defaultValue={bill.location} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
+                        <input type="text" defaultValue={bill?.location} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
                     </div>
                 </div>
 

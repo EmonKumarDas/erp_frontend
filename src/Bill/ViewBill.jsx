@@ -29,7 +29,7 @@ function ViewBill() {
             <div ref={componentRef} >
                 <div className="flex justify-between">
                     <div className='p-4'>
-                        <h1 className="text-black-2 text-3xl font-bold mb-2">Shajalal Lighting</h1>
+                        <h1 className="text-black-2 text-3xl font-bold uppercase mb-2">{createdBill?.shopname}</h1>
                         <p className="text-black-2 text-sm">All kinds of electric goods whole saler and retailer</p>
                         <p className="text-black-2 text-sm mt-1">119/24, Foyez Electric Market, Nandankanan, Chittagong</p>
                         <p className="text-black-2 text-sm">Mobile: 01846378948</p>

@@ -275,7 +275,7 @@ export const ApiProvider = ({ children }) => {
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
     const userData = {
-      name, location, phonenumber, date, advance, shopname, newbalance: parseInt(total - advance), total,
+      name, location, phonenumber, date, advance, shopname, newbalance: parseInt(advance ? total - advance : total - 0), total,
     }
 
     const mergedObject = {
@@ -336,7 +336,7 @@ export const ApiProvider = ({ children }) => {
         setBills(result)
       })
   }, [])
-
+                          
   const totalSell = bills.reduce((acc, item) => {
     if (item.advance) {
       return acc + parseInt(item.advance);
@@ -447,17 +447,14 @@ export const ApiProvider = ({ children }) => {
 
   const handleEmploy = (event) => {
     event.preventDefault();
-    setLoading(true)
+    setLoading(true);
 
-
-    const matchingUser = employees.find(user => user.email === formData.email)
+    const matchingUser = employees.find(user => user.email === formData.email);
     if (matchingUser) {
-      window.alert("User Already Exists")
-
-      setLoading(false)
-    }
-    else {
-      setLoading(true)
+      window.alert("User Already Exists");
+      setLoading(false);
+    } else {
+      setLoading(true);
       fetch("http://localhost:5000/addUser", {
         method: "POST",
         headers: {
@@ -467,12 +464,14 @@ export const ApiProvider = ({ children }) => {
       })
         .then(res => res.json())
         .then(result => {
-          setLoading(false)
-        })
+          event.target.reset(); // Reset the form fields
+          setFormData({}); // Reset the state for controlled components
+          setLoading(false);
+        });
     }
-
-
   };
+
+
 
   // -------------------------------------add employ--------------------------------------- 
   const [employees, setEmployees] = useState([]);
@@ -555,11 +554,10 @@ export const ApiProvider = ({ children }) => {
       })
       .then((result) => {
         setLoading(false);
-        console.log(result);
         setIsModalOpen(false);
       })
       .catch((error) => {
-        console.error(error);
+
         setLoading(false);
       });
   };
@@ -567,15 +565,19 @@ export const ApiProvider = ({ children }) => {
   // -------------------------------------update customar bill--------------------------------------- 
 
   const [getTotalSaleByDate, setGetTotalSaleByDate] = useState([]);
+  const [getTotalRevenueByDate, setGetTotalRevenueByDate] = useState([]);
   const now = new Date();
   const month = `${now.getFullYear()}-${now.getMonth() + 1}`;
   fetch(`http://localhost:5000/getBillByDate/${month}`).then(res => res.json()).then(result => {
     let totalAdvance = 0;
+    let revenue = 0;
     for (let i = 0; i < result.length; i++) {
-      totalAdvance += result[i].advance;
+      totalAdvance += result[i]?.advance;
+      revenue += result[i]?.advance;
     }
+    setGetTotalRevenueByDate(revenue)
     if (totalAdvance > 1000) {
-      const simplifiedTotal = Math.floor(totalAdvance / 1000);
+      const simplifiedTotal = (totalAdvance / 1000).toFixed(1);
       setGetTotalSaleByDate(simplifiedTotal + "k");
     }
     else {
@@ -583,6 +585,43 @@ export const ApiProvider = ({ children }) => {
     }
   })
   // --------------------------------get Total Income By Date-------------------------------------
+
+  const [getTotalExpenseByDate, setGetTotalExpenseByDate] = useState([]);
+  const [getTotalExpenseByDateInInteger, setGetTotalExpenseByDateInInteger] = useState([]);
+
+  fetch(`http://localhost:5000/getBillByDate/${month}`)
+    .then(res => res.json())
+    .then(result => {
+      let totalSale = 0;
+
+      for (let i = 0; i < result.length; i++) {
+        totalSale += result[i]?.total;
+      }
+
+      fetch(`http://localhost:5000/getemploypaymentbydate/${month}`)
+        .then(res => res.json())
+        .then(data => {
+          let totalPayment = 0;
+
+          for (let i = 0; i < data.length; i++) {
+            totalPayment += data[i]?.pay;
+          }
+
+          totalSale += totalPayment;
+          setGetTotalExpenseByDateInInteger(totalSale)
+          if (totalSale > 1000) {
+            const simplifiedTotal = (totalSale / 1000).toFixed(1);
+            setGetTotalExpenseByDate(simplifiedTotal + "k");
+          } else {
+            setGetTotalExpenseByDate(totalSale);
+          }
+        });
+    });
+
+
+  // *************************************************************************************
+
+  // --------------------------------get Total expense By Date-------------------------------------
 
   const [getTotalProductByDate, setGetTotalProductByDate] = useState([]);
   fetch(`http://localhost:5000/getproductbydate/${month}`).then(res => res.json()).then(result => {
@@ -633,7 +672,7 @@ export const ApiProvider = ({ children }) => {
       handlePayBill,
       setLoading,
       getTotalSaleByDate,
-      
+
       getTotalProductByDate,
       shop,
       handleUpdatePaybill,
@@ -648,11 +687,14 @@ export const ApiProvider = ({ children }) => {
       allcompany,
       totalProduct,
       StockOut,
+      getTotalExpenseByDate,
       loading,
       totalPurchasePrice,
       totalSell,
       handleGetProduct,
       handleProductDelete,
+      getTotalRevenueByDate,
+      getTotalExpenseByDateInInteger,
       handleBillMemo,
       handleBillcreating,
       codeData,
