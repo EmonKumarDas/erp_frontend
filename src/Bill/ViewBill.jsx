@@ -5,7 +5,7 @@ function ViewBill() {
     const { id } = useParams();
     const [createdBill, setCreatedBill] = useState({})
     useEffect(() => {
-        fetch(`http://localhost:5000/getbills/${id}`)
+        fetch(`https://admin-backend-seven.vercel.app/getbills/${id}`)
             .then(response => {
                 console.log(response);
                 return response.json();

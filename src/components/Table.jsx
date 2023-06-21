@@ -26,7 +26,7 @@ function Table() {
                                     <th className="px-4 text-left">#</th>
                                     <th className="px-4 text-left">Product</th>
                                     <th className="px-4 text-left">Watt</th>
-                                    <th className="px-4 text-left">Quantity</th>
+                                    <th className="px-4 text-left">Stock In</th>
                                     <th className="px-4 text-left">Price</th>
                                 </tr>
                             </thead>

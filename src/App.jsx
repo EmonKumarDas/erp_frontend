@@ -25,6 +25,9 @@ import AddEmploy from './Employ Management/AddEmploy'
 import ChatCard from './components/ChatCard'
 import AddShop from './Employ Management/AddShop'
 import PrintInstant from './Bill/PrintInstant'
+import ReturnProduct from './ReturnProduct/ReturnProduct'
+import StockIn from './Stock/StockIn'
+import AllShop from './Employ Management/AllShop'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -52,11 +55,14 @@ const App = () => {
             <Route path='/profile' element={<PrivateRoute> <Profile /></PrivateRoute>} />
             <Route path='/forms/form-elements' element={<FormElements />} />
             <Route path='/addcompany' element={<PrivateRoute><AddCompany /></PrivateRoute>} />
+            <Route path='/returnProduct' element={<PrivateRoute><ReturnProduct /></PrivateRoute>} />
             <Route path='/addemploy' element={<PrivateRoute><AddEmploy /></PrivateRoute>} />
             <Route path='/addproduct' element={<PrivateRoute><AddProduct /></PrivateRoute>} />
             <Route path='/bill' element={<PrivateRoute><CreateBill /></PrivateRoute>} />
             <Route path='/print' element={<PrivateRoute><Print /></PrivateRoute>} />
             <Route path='/printinstant' element={<PrivateRoute><PrintInstant /></PrivateRoute>} />
+            <Route path='/stockIn' element={<PrivateRoute><StockIn /></PrivateRoute>} />
+            <Route path='/manageshop' element={<PrivateRoute><AllShop /></PrivateRoute>} />
             <Route path='/manageEmploy' element={<PrivateRoute><ChatCard /></PrivateRoute>} />
             <Route path='/addshop' element={<PrivateRoute><AddShop /></PrivateRoute>} />
 

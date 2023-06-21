@@ -3,10 +3,10 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import Breadcrumb from '../../components/Breadcrumb';
 import { ApiContext } from '../../ApiProvider/ApiProvider';
 import CircleLoader from '../../components/CircleLoader';
-import { Link } from 'react-router-dom';
 
 const AllCompany = () => {
     const { allcompany, loading } = useContext(ApiContext);
+    
     return (
         <DefaultLayout>
             <Breadcrumb pageName='All Bills' />

@@ -6,21 +6,35 @@ import CashMemo from './CashMemo';
 import { ToastContainer } from 'react-toastify';
 
 const CreateBill = () => {
-    const { data, handleCodeChange, selectedCode, selectedProduct,
+    const { data, handleCodeChange, allcompany, selectedCode, selectedProduct,
         handleProductChange, codeData, ProductData, handleBillcreating } = useContext(ApiContext);
 
     const handleProdcutCodeChange = (e) => {
         handleCodeChange(e)
+       
 
     }
     const handleProduct = (e) => {
         handleProductChange(e)
-
+       
     }
 
     const handleBillcreate = (e) => {
         handleBillcreating(e)
+        
     };
+
+    const uniqueData = [];
+    const uniqueValues = new Set();
+
+    data.forEach(item => {
+        const { productname, watt } = item;
+        const key = productname + '-' + watt;
+        if (!uniqueValues.has(key)) {
+            uniqueValues.add(key);
+            uniqueData.push(item);
+        }
+    });
 
     return (
         <DefaultLayout>
@@ -37,7 +51,7 @@ const CreateBill = () => {
 
                         <div>
                             <label className='mb-3 block text-black dark:text-white'>
-                                Product's Code
+                                Product's Code (BarCode)
                             </label>
                             <select
                                 required
@@ -46,7 +60,7 @@ const CreateBill = () => {
                                 value={!selectedCode ? selectedProduct?.barcode : selectedCode}
                                 onChange={handleProdcutCodeChange}
                             >
-                                <option selected>Select Product's Code</option>
+                                <option selected>Select Product's Code(BarCode)</option>
                                 {data.map((code) => (
                                     <option key={code.barcode} value={code.barcode}>
                                         {code.barcode}
@@ -55,6 +69,25 @@ const CreateBill = () => {
                             </select>
                         </div>
 
+                        <div>
+                            <label className='mb-3 block text-black dark:text-white'>
+                                Select Company's Name
+                            </label>
+                            <select
+                                required
+                                className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                                name="company"
+                                // value={!selectedProduct ? codeData?.productname : selectedProduct}
+                                onChange={handleProduct}
+                            >
+                                <option selected>Select Company's Name</option>
+                                {allcompany.map((product) => (
+                                    <option key={product.comapanyname} value={product.comapanyname}>
+                                        {product.comapanyname}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div>
                             <label className='mb-3 block text-black dark:text-white'>
                                 Product's Name
@@ -67,13 +100,14 @@ const CreateBill = () => {
                                 onChange={handleProduct}
                             >
                                 <option selected>Select Product's Name</option>
-                                {data.map((product) => (
+                                {uniqueData.map((product) => (
                                     <option key={product.productname} value={product.productname}>
                                         {product.productname}
                                     </option>
                                 ))}
                             </select>
                         </div>
+
 
                         <div>
                             <label className='mb-3 block text-black dark:text-white'>
@@ -86,8 +120,8 @@ const CreateBill = () => {
 
                             >
                                 <option selected>Select Watt </option>
-                                {data.map((product) => (
-                                    <option key={product.watt} value={product.watt}>
+                                {uniqueData.map((product) => (
+                                    <option value={product.watt}>
                                         {product.watt}
                                     </option>
                                 ))}

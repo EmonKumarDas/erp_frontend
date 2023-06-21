@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { ApiContext } from '../ApiProvider/ApiProvider';
 
-const Modal = ({ employData }) => {
-    const { isModalOpen, setIsModalOpen, handlePayBill, loading } = useContext(ApiContext);
 
-    const handlePayBillform = (e) => {
-        handlePayBill(e)
+const ShopModel = ({ shops }) => {
+    const { isModalOpen, setIsModalOpen, handleshopBill, loading } = useContext(ApiContext);
+
+    const handleshopPayBillform = (e) => {
+        handleshopBill(e)
 
     }
     return (
@@ -14,17 +15,18 @@ const Modal = ({ employData }) => {
                 <div className="fixed z-10 inset-0 overflow-y-auto">
                     <div className="flex items-center justify-center min-h-screen">
                         <div className="bg-boxdark rounded-lg shadow-lg p-6">
-                            <form onSubmit={handlePayBillform}>
+                            <form onSubmit={handleshopPayBillform}>
                                 <div>
                                     <label className='mb-3 block text-black dark:text-white'>
-                                        Name
+                                        Shop Name
                                     </label>
                                     <input
                                         required
-                                        name='name'
-                                        defaultValue={employData?.name}
+
+                                        name='shopname'
+                                        defaultValue={shops?.shopname}
                                         type='text'
-                                        placeholder='Name'
+                                        placeholder='shopname'
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                     />
                                 </div>
@@ -34,10 +36,10 @@ const Modal = ({ employData }) => {
                                     </label>
                                     <input
                                         required
-                                        defaultValue={employData?.number}
-                                        name='number'
+                                        defaultValue={shops?.location}
+                                        name='location'
                                         type='text'
-                                        placeholder='Number'
+                                        placeholder='location'
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                     />
                                 </div>
@@ -55,6 +57,18 @@ const Modal = ({ employData }) => {
                                 </div>
                                 <div>
                                     <label className='mb-3 block text-black dark:text-white'>
+                                        Tax
+                                    </label>
+                                    <input
+                                        name='tax'
+                                        type='text'
+                                        defaultValue={0}
+                                        placeholder='tax'
+                                        className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                                    />
+                                </div>
+                                <div>
+                                    <label className='mb-3 block text-black dark:text-white'>
                                         Date
                                     </label>
                                     <input
@@ -63,6 +77,7 @@ const Modal = ({ employData }) => {
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                     />
                                 </div>
+
                                 <button
                                     className="bg-primary text-white px-4 py-2 my-2 rounded"
                                 >
@@ -86,4 +101,4 @@ const Modal = ({ employData }) => {
     );
 };
 
-export default Modal;
+export default ShopModel;

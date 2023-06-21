@@ -13,7 +13,7 @@ const Profile = () => {
   const [employee, setEmployee] = useState([]);
   useEffect(() => {
     setLoading(true)
-    fetch(`http://localhost:5000/getemploybille/${id}`)
+    fetch(`https://admin-backend-seven.vercel.app/getemploybille/${id}`)
       .then(res => res.json())
       .then(result => {
         setEmployee(result)

@@ -57,7 +57,7 @@ const DropdownUser = () => {
                   user?.displayName
                 }
               </span>
-              <span className='block text-xs'>UX Designer</span>
+              <span className='block text-xs'>U</span>
             </span> : ""
         }
 

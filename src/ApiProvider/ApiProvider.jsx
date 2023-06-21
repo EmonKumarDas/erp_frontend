@@ -9,22 +9,42 @@ export const ApiProvider = ({ children }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // ----------------------------+++++++++++start++++++++++++++---------------------------------------------
+
+  function formatDate(date) {
+    const parts = date.split('-');
+    const year = parts[0];
+    const month = parts[1].padStart(2, '0');
+    return `${year}-${month}`;
+  }
+
+  // ----------------------------+++++++++++stop++++++++++++++-----------------------------------------------
   useEffect(() => {
     setLoading(true);
-    const fetchData = async () => {
-      const response = await fetch('http://localhost:5000/getProducts');
-      const result = await response.json();
-      setData(result);
-      setLoading(false);
 
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://admin-backend-seven.vercel.app/getProducts');
+        const result = await response.json();
+        setData(result);
+        setLoading(false);
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
+
+      }
     };
+
     fetchData();
+
     const interval = setInterval(() => {
       fetchData();
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
+
   // ------------------------------end of get Product----------------------------------------
 
   const handleCompany = (e) => {
@@ -39,7 +59,7 @@ export const ApiProvider = ({ children }) => {
       adress,
     }
     setLoading(true);
-    fetch("http://localhost:5000/addcompany", {
+    fetch("https://admin-backend-seven.vercel.app/addcompany", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -48,6 +68,7 @@ export const ApiProvider = ({ children }) => {
     }).then(res => res.json()).then(result => {
       e.target.reset();
       setLoading(false)
+      window.alert("Success")
     })
 
   }
@@ -64,7 +85,7 @@ export const ApiProvider = ({ children }) => {
     }
 
     setLoading(true);
-    fetch("http://localhost:5000/addshop", {
+    fetch("https://admin-backend-seven.vercel.app/addshop", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -73,6 +94,7 @@ export const ApiProvider = ({ children }) => {
     }).then(res => res.json()).then(result => {
       e.target.reset();
       setLoading(false)
+      window.alert("Success")
     })
 
   }
@@ -82,10 +104,11 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     setLoading(true);
     const fetchData = async () => {
-      const response = await fetch('http://localhost:5000/getshop');
+      const response = await fetch('https://admin-backend-seven.vercel.app/getshop');
       const result = await response.json();
       setShop(result);
       setLoading(false);
+
 
     };
     fetchData();
@@ -99,8 +122,9 @@ export const ApiProvider = ({ children }) => {
 
   const [allcompany, setAllcompany] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/getCompany").then(res => res.json()).then(result => {
+    fetch("https://admin-backend-seven.vercel.app/getCompany").then(res => res.json()).then(result => {
       setAllcompany(result)
+
     })
   }, [])
 
@@ -110,13 +134,14 @@ export const ApiProvider = ({ children }) => {
 
   const handleProductDelete = (id) => {
     setLoading(true);
-    fetch(`http://localhost:5000/deleteProduct/${id}`, {
+    fetch(`https://admin-backend-seven.vercel.app/deleteProduct/${id}`, {
       method: 'DELETE'
     })
       .then(res => res.json())
       .then(result => {
         fetchData();
         setLoading(false);
+        window.alert("Success")
       })
       .catch(error => {
         console.error(`Error deleting product with ID`);
@@ -145,8 +170,87 @@ export const ApiProvider = ({ children }) => {
       singleproductprice: Math.round(purchaseprice / quantity)
     }
 
+    // -------------********get total product start*********------------------------
+    const totalProduct = {
+      productName,
+      watt,
+      quantity,
+      companyName,
+    }
+
     setLoading(true);
-    fetch("http://localhost:5000/addProducts", {
+    fetch("https://admin-backend-seven.vercel.app/getTotalProduct")
+      .then(res => res.json())
+      .then(results => {
+        if (results.length === 0) {
+
+          // Create a new totalProduct using the API endpoint
+          fetch("https://admin-backend-seven.vercel.app/totalProduct", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(totalProduct)
+          })
+            .then(res => res.json())
+            .then(createdResult => {
+              window.alert("Success")
+              // Handle the result of the creation, if needed
+            })
+            .catch(error => {
+              // Handle any error during the creation process
+            });
+        }
+        else {
+          results?.find(item => {
+
+            if (item?.productname === productName &&
+              item?.watt === watt &&
+              item?.companyname === companyName.toLowerCase()) {
+              const newQuantity = { quantity: quantity + (item?.quantity || 0) };
+              // Update the quantity using the API endpoint
+              fetch(`https://admin-backend-seven.vercel.app/UpdateProductQuantity/${item._id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newQuantity)
+              })
+                .then(res => {
+
+                  return res.json();
+                })
+                .then(updatedResult => {
+                  // Handle the result of the update, if needed
+                });
+            }
+            else {
+
+              // Create a new totalProduct using the API endpoint
+              fetch("https://admin-backend-seven.vercel.app/totalProduct", {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(totalProduct)
+              })
+                .then(res => res.json())
+                .then(createdResult => {
+                  window.alert("Success")
+                  // Handle the result of the creation, if needed
+                })
+                .catch(error => {
+                  // Handle any error during the creation process
+                });
+            }
+          })
+
+        }
+      });
+
+    // -------------********get total product end*********------------------------
+
+    fetch("https://admin-backend-seven.vercel.app/addProducts", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -155,6 +259,7 @@ export const ApiProvider = ({ children }) => {
     }).then(res => res.json()).then(result => {
       e.target.reset();
       setLoading(false)
+      window.alert("Success")
     })
 
   }
@@ -165,7 +270,7 @@ export const ApiProvider = ({ children }) => {
 
   useEffect(() => {
     if (selectedCode) {
-      fetch(`http://localhost:5000/BarCodeData/${selectedCode}`)
+      fetch(`https://admin-backend-seven.vercel.app/BarCodeData/${selectedCode}`)
         .then((response) => response.json())
         .then((data) => setCodeData(data[0]))
         .catch((error) => console.error(error));
@@ -182,7 +287,7 @@ export const ApiProvider = ({ children }) => {
 
   useEffect(() => {
     if (selectedProduct) {
-      fetch(`http://localhost:5000/getProductsByProductName/${selectedProduct}`)
+      fetch(`https://admin-backend-seven.vercel.app/getProductsByProductName/${selectedProduct}`)
         .then((response) => response.json())
         .then((data) => setProductData(data[0]))
         .catch((error) => console.error(error));
@@ -204,13 +309,14 @@ export const ApiProvider = ({ children }) => {
     const PurchasePrice = e.target.PurchasePrice.value;
     const Discount = e.target.Discount.value;
     const quantity = e.target.quantity.value;
+    const company = e.target.company.value;
     const watt = e.target.watt.value;
     const TotalPrice = PurchasePrice * quantity;
     const DiscountAmount = (Discount / 100) * TotalPrice
     const SellPrice = TotalPrice - DiscountAmount
     const total = SellPrice;
 
-    await fetch(` http://localhost:5000/getProductsByProductNameAndWatt/${productname}/${watt}`)
+    await fetch(` https://admin-backend-seven.vercel.app/getProductsByProductNameAndWatt/${productname}/${watt}`)
       .then(res => res.json())
       .then(result => {
         setProductCode(result);
@@ -219,6 +325,7 @@ export const ApiProvider = ({ children }) => {
           barCode,
           productname,
           watt,
+          company,
           TotalPrice,
           PurchasePrice,
           SellPrice,
@@ -227,35 +334,41 @@ export const ApiProvider = ({ children }) => {
           total
         };
 
-        if (result[0]?.quantity > quantity) {
-          const existingData = JSON.parse(localStorage.getItem('billData')) || [];
+        fetch(`https://admin-backend-seven.vercel.app/getProductsByPnameComNameWatt/${productname.toLowerCase()}/${watt.toLowerCase()}/${company.toLowerCase()}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data[0]?.quantity >= quantity) {
+              const existingData = JSON.parse(localStorage.getItem('billData')) || [];
 
-          const updatedData = [...existingData, newBillData];
+              const updatedData = [...existingData, newBillData];
 
-          localStorage.setItem('billData', JSON.stringify(updatedData));
+              localStorage.setItem('billData', JSON.stringify(updatedData));
 
-          const existedQuantity = (result[0]?.quantity || 0) - quantity;
-          fetch(`http://localhost:5000/UpdateProduct/${result[0]?._id}`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              quantity: existedQuantity
-            })
+              const existedQuantity = (data[0].quantity || 0) - quantity;
+              fetch(`https://admin-backend-seven.vercel.app/UpdateProductQuantity/${data[0]._id}`, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  quantity: existedQuantity
+                })
+              })
+                .then(response => response.json())
+                .then(data => {
+                  window.alert("Success")
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+
+            }
+            else {
+              toast("you don't have much Product")
+            }
           })
-            .then(response => response.json())
-            .then(data => {
 
-            })
-            .catch(error => {
-              console.error(error);
-            });
 
-        }
-        else {
-          toast("you don't have much Product")
-        }
 
 
       });
@@ -290,7 +403,7 @@ export const ApiProvider = ({ children }) => {
     localStorage.setItem('mergedData', mergedObjectString);
 
     setLoading(true)
-    fetch("http://localhost:5000/createBill", {
+    fetch("https://admin-backend-seven.vercel.app/createBill", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -311,7 +424,7 @@ export const ApiProvider = ({ children }) => {
 
   const [bill, setBill] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/getBill")
+    fetch("https://admin-backend-seven.vercel.app/getBill")
       .then(res => res.json())
       .then(result => {
 
@@ -330,13 +443,13 @@ export const ApiProvider = ({ children }) => {
 
   const [bills, setBills] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/getBill")
+    fetch("https://admin-backend-seven.vercel.app/getBill")
       .then(res => res.json())
       .then(result => {
         setBills(result)
       })
   }, [])
-                          
+
   const totalSell = bills.reduce((acc, item) => {
     if (item.advance) {
       return acc + parseInt(item.advance);
@@ -380,7 +493,7 @@ export const ApiProvider = ({ children }) => {
         window.location.replace('/');
       }
       else {
-        fetch("http://localhost:5000/addUser", {
+        fetch("https://admin-backend-seven.vercel.app/addUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -402,7 +515,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/getBill");
+        const response = await fetch("https://admin-backend-seven.vercel.app/getBill");
         const result = await response.json();
         SetBills(result);
       } catch (error) {
@@ -421,9 +534,9 @@ export const ApiProvider = ({ children }) => {
 
   // --------------------------------get created bills data----------------------------------
   const getBillByID = (id) => {
-    return fetch(`http://localhost:5000/getbills/${id}`)
+    return fetch(`https://admin-backend-seven.vercel.app/getbills/${id}`)
       .then(response => {
-        console.log(response);
+
         return response.json();
       })
       .then(res => res);
@@ -455,7 +568,7 @@ export const ApiProvider = ({ children }) => {
       setLoading(false);
     } else {
       setLoading(true);
-      fetch("http://localhost:5000/addUser", {
+      fetch("https://admin-backend-seven.vercel.app/addUser", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -477,7 +590,7 @@ export const ApiProvider = ({ children }) => {
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch("http://localhost:5000/getUsers").then(res => res.json()).then(result => {
+      fetch("https://admin-backend-seven.vercel.app/getUsers").then(res => res.json()).then(result => {
         setEmployees(result);
       });
     }, 5000);
@@ -492,12 +605,13 @@ export const ApiProvider = ({ children }) => {
     const name = e.target.name.value;
     const number = e.target.number.value;
     const pay = parseInt(e.target.pay.value);
-
+    const date = e.target.date.value;
+    const month = date.slice(0, 7);
     const paybill = {
-      name, number, pay
+      name, number, pay, month, date
     }
     setLoading(true);
-    fetch("http://localhost:5000/paybill", {
+    fetch("https://admin-backend-seven.vercel.app/paybill", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -510,6 +624,34 @@ export const ApiProvider = ({ children }) => {
   }
 
   // -------------------------------------pay employees bill--------------------------------------- 
+
+  const handleshopBill = (e) => {
+    e.preventDefault();
+    const shopname = e.target.shopname.value;
+    const location = e.target.location.value;
+    const pay = parseInt(e.target.pay.value);
+    const tax = parseInt(e.target.tax.value);
+    const date = e.target.date.value;
+    const month = date.slice(0, 7);
+    
+    const paybill = {
+      shopname, location, pay, tax: !tax ? 0 : tax, date, month, total: pay + tax
+    }
+
+    setLoading(true);
+    fetch("http://localhost:5000/payshopbill", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(paybill)
+    }).then(res => res.json()).then(result => {
+      setLoading(false)
+      setIsModalOpen(false)
+    })
+  }
+
+  // -------------------------------------pay shop's bill--------------------------------------- 
 
   function getMonthName(number) {
     const months = [
@@ -537,9 +679,9 @@ export const ApiProvider = ({ children }) => {
     const totalpay = customarbill?.advance + advance;
 
     const paybill = { advance: totalpay, newbalance };
-    console.log(paybill);
+
     setLoading(true);
-    fetch(`http://localhost:5000/UpdateProductbill/${customarbill?._id}`, {
+    fetch(`https://admin-backend-seven.vercel.app/UpdateProductbill/${customarbill?._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -568,37 +710,47 @@ export const ApiProvider = ({ children }) => {
   const [getTotalRevenueByDate, setGetTotalRevenueByDate] = useState([]);
   const now = new Date();
   const month = `${now.getFullYear()}-${now.getMonth() + 1}`;
-  fetch(`http://localhost:5000/getBillByDate/${month}`).then(res => res.json()).then(result => {
-    let totalAdvance = 0;
-    let revenue = 0;
-    for (let i = 0; i < result.length; i++) {
-      totalAdvance += result[i]?.advance;
-      revenue += result[i]?.advance;
-    }
-    setGetTotalRevenueByDate(revenue)
-    if (totalAdvance > 1000) {
-      const simplifiedTotal = (totalAdvance / 1000).toFixed(1);
-      setGetTotalSaleByDate(simplifiedTotal + "k");
-    }
-    else {
-      setGetTotalSaleByDate(totalAdvance)
-    }
-  })
-  // --------------------------------get Total Income By Date-------------------------------------
+
+  try {
+    fetch(`https://admin-backend-seven.vercel.app/getBillByDate/${month}`)
+      .then(res => res.json())
+      .then(result => {
+        let totalAdvance = 0;
+        let revenue = 0;
+        for (let i = 0; i < result.length; i++) {
+          totalAdvance += result[i]?.advance;
+          revenue += result[i]?.advance;
+        }
+        setGetTotalRevenueByDate(revenue);
+
+        if (totalAdvance > 1000) {
+
+          const simplifiedTotal = (totalAdvance / 1000);
+          setGetTotalSaleByDate(simplifiedTotal + "k");
+        } else {
+          setGetTotalSaleByDate(totalAdvance + "৳");
+        }
+      });
+  } catch (error) {
+    // Handle the error here
+    console.error("An error occurred:", error);
+  }
+
+
+  // --------------------------------get Total Revenue By Date-------------------------------------
 
   const [getTotalExpenseByDate, setGetTotalExpenseByDate] = useState([]);
   const [getTotalExpenseByDateInInteger, setGetTotalExpenseByDateInInteger] = useState([]);
 
-  fetch(`http://localhost:5000/getBillByDate/${month}`)
+  fetch(`https://admin-backend-seven.vercel.app/getproductbydate/${month}`)
     .then(res => res.json())
     .then(result => {
       let totalSale = 0;
-
       for (let i = 0; i < result.length; i++) {
-        totalSale += result[i]?.total;
+        totalSale += result[i]?.purchaseprice;
       }
 
-      fetch(`http://localhost:5000/getemploypaymentbydate/${month}`)
+      fetch(`https://admin-backend-seven.vercel.app/getemploypaymentbydate/${month}`)
         .then(res => res.json())
         .then(data => {
           let totalPayment = 0;
@@ -624,40 +776,81 @@ export const ApiProvider = ({ children }) => {
   // --------------------------------get Total expense By Date-------------------------------------
 
   const [getTotalProductByDate, setGetTotalProductByDate] = useState([]);
-  fetch(`http://localhost:5000/getproductbydate/${month}`).then(res => res.json()).then(result => {
-    let totalAdvance = 0;
-    for (let i = 0; i < result.length; i++) {
-      totalAdvance += result[i].purchaseprice
-        ;
-    }
-    if (totalAdvance > 1000) {
-      const simplifiedTotal = Math.floor(totalAdvance / 1000);
-      setGetTotalProductByDate(simplifiedTotal + "k");
-    }
-    else {
-      setGetTotalProductByDate(totalAdvance)
-    }
-  })
+
+  try {
+    fetch(`https://admin-backend-seven.vercel.app/getproductbydate/${month}`)
+      .then(res => res.json())
+      .then(result => {
+        let totalAdvance = 0;
+        for (let i = 0; i < result.length; i++) {
+          totalAdvance += result[i].purchaseprice;
+        }
+        if (totalAdvance > 1000) {
+          const simplifiedTotal = Math.floor(totalAdvance / 1000);
+          setGetTotalProductByDate(simplifiedTotal + "k");
+        } else {
+          setGetTotalProductByDate(totalAdvance + "৳");
+        }
+      });
+  } catch (error) {
+    // Handle the error here
+    console.error("An error occurred:", error);
+  }
+
   // --------------------------------get Total Product purchase price By Date-------------------------------------
 
+  const [stockIn, setStockIn] = useState([]);
+  useEffect(() => {
+    setLoading(true);
+
+    const fetchTotalProduct = async () => {
+      try {
+        const response = await fetch('https://admin-backend-seven.vercel.app/getTotalProduct');
+        const result = await response.json();
+        setStockIn(result);
+      } catch (error) {
+
+      }
+    };
+
+    fetchTotalProduct();
+
+    const interval = setInterval(() => {
+      // fetchData();
+      fetchTotalProduct();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // *******************end of get total product******************************************
+
+  const [shopBillbyDate, setShopBillbyDate] = useState([]);
 
 
-  // const [getTotalIncomeByDate, setGetTotalIncomeByDate] = useState([]);
-  // fetch(`http://localhost:5000/getproductbydate/${month}`).then(res => res.json()).then(result => {
-  //   let totalAdvance = 0;
-  //   for (let i = 0; i < result.length; i++) {
-  //     totalAdvance += result[i].purchaseprice
-  //       ;
-  //   }
-  //   if (totalAdvance > 1000) {
-  //     const simplifiedTotal = Math.floor(totalAdvance / 1000);
-  //     setGetTotalIncomeByDate(simplifiedTotal + "k");
-  //   }
-  //   else {
-  //     setGetTotalIncomeByDate(totalAdvance)
-  //   }
-  // })
-  // // --------------------------------get Total Total income By Date-------------------------------------
+  useEffect(() => {
+    setLoading(true);
+
+    const getshopbill = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/getShopPaymentByDate/${formatDate(month)}`);
+        const result = await response.json();
+        setShopBillbyDate(result);
+      } catch (error) {
+
+      }
+    };
+
+    getshopbill();
+
+    const interval = setInterval(() => {
+      getshopbill();
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
 
   return (
     <ApiContext.Provider value={{
@@ -666,13 +859,14 @@ export const ApiProvider = ({ children }) => {
       googleSign,
       selectedProduct,
       formData,
+      shopBillbyDate,
       employees,
+      stockIn,
       isModalOpen,
       setIsModalOpen,
       handlePayBill,
       setLoading,
       getTotalSaleByDate,
-
       getTotalProductByDate,
       shop,
       handleUpdatePaybill,
@@ -683,6 +877,7 @@ export const ApiProvider = ({ children }) => {
       getMonthName,
       handleShop,
       handleEmploy,
+      handleshopBill,
       ProductData,
       allcompany,
       totalProduct,
@@ -698,6 +893,7 @@ export const ApiProvider = ({ children }) => {
       handleBillMemo,
       handleBillcreating,
       codeData,
+      setShop,
       selectedCode,
       customarbills,
       handleCodeChange,
