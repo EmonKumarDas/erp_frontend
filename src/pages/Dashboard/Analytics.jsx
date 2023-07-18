@@ -1,8 +1,6 @@
 import React, { useContext, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import CardOne from '../../components/CardOne';
-import ChartOne from '../../components/ChartOne';
-import ChartTwo from '../../components/ChartTwo';
 import { ApiContext } from '../../ApiProvider/ApiProvider';
 import { Link } from 'react-router-dom';
 import StockData from './StockInData';

@@ -1,6 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom'
-import { userContext } from './AuthProvider';
+import React, { useContext } from 'react';
 import { ApiContext } from '../../ApiProvider/ApiProvider';
 
 const SignIn = () => {

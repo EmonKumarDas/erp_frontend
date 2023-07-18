@@ -82,8 +82,12 @@ function PrintInstant() {
                                 <td className="py-2 text-black-2 font-bold px-4"><input type="text" className="p-2 rounded-md w-24" readOnly defaultValue={bill?.advance} /></td>
                             </tr>
                             <tr>
+                                <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Discount:</td>
+                                <td className="py-2 text-black-2 font-bold px-4"><input type="text" className="p-2 rounded-md w-24" readOnly defaultValue={bill?.get_discount} /></td>
+                            </tr>
+                            <tr>
                                 <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Remaining Tk:</td>
-                                <td className="py-2 text-black-2 font-bold px-4">{bill?.newbalance}</td>
+                                <td className="py-2 text-black-2 font-bold px-4">{bill?.discountedTotal}</td>
                             </tr>
                         </tfoot>
                     </table>

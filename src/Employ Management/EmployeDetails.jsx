@@ -7,9 +7,7 @@ import { ApiContext } from '../ApiProvider/ApiProvider';
 const EmployeDetails = ({ employee, loading }) => {
     const { getMonthName } = useContext(ApiContext);
     return (
-
         <div className='col-span-12 mt-5 rounded-sm border border-stroke bg-white py-6 shadow-default dark:border-strokedark dark:bg-boxdark'>
-
 
             {
                 loading ? <CircleLoader></CircleLoader> :
@@ -41,6 +39,15 @@ const EmployeDetails = ({ employee, loading }) => {
 
                                     <div className=''>
                                         <h5 className='font-medium text-white'>{employ?.pay} TK</h5>
+                                        <p>Salary</p>
+                                    </div>
+                                    <div className=''>
+                                        <h5 className='font-medium text-white'>||</h5>
+                                    </div>
+
+                                    <div className=''>
+                                        <h5 className='font-medium text-white'>{employ?.pay} TK</h5>
+                                        <p>Others Bill</p>
                                     </div>
 
                                 </div>

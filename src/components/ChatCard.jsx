@@ -10,11 +10,13 @@ import { Link } from 'react-router-dom'
 const ChatCard = () => {
   const { employees, setIsModalOpen, loading } = useContext(ApiContext);
   const [employData, setEmployData] = useState([]);
+
   const handlePayClick = (id) => {
     setIsModalOpen(true);
     const employ = employees.find((employ) => employ._id === id);
     setEmployData(employ)
   };
+
   return (
     <DefaultLayout>
       <div className='col-span-12 rounded-sm border border-stroke bg-white py-6 shadow-default dark:border-strokedark dark:bg-boxdark'>
@@ -40,15 +42,17 @@ const ChatCard = () => {
                       <h5 className='font-medium'>{employ?.name}</h5>
                       <p>
                         <span className='text-sm'>{employ?.number}</span>
-                        {/* <span className='text-xs'> . Sep 20</span> */}
                       </p>
                     </div>
                   </div>
+
                   <button onClick={() => handlePayClick(employ._id)} className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>PAY</button>
+                  
                   <Link to={`/details/${employ.number}`}>
-                  <button  className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
-                  </Link>
-                  <button className='bg-meta-5 text-white px-4 py-2 my-2 rounded font-bold'>EDIT</button>
+                    <button className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
+                  </Link >
+                  
+                  {/* <button className='bg-meta-5 text-white px-4 py-2 my-2 rounded font-bold'>EDIT</button> */}
                 </a>
               </div>
             ))

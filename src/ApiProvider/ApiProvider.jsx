@@ -21,7 +21,6 @@ export const ApiProvider = ({ children }) => {
   // ----------------------------+++++++++++stop++++++++++++++-----------------------------------------------
   useEffect(() => {
     setLoading(true);
-
     const fetchData = async () => {
       try {
         const response = await fetch('https://admin-backend-seven.vercel.app/getProducts');
@@ -149,23 +148,42 @@ export const ApiProvider = ({ children }) => {
   };
   // ------------------------------end of handle delete Product----------------------------------------
 
+
+  const handleshopDelete = (id) => {
+    setLoading(true);
+    fetch(`https://admin-backend-seven.vercel.app/deleteshop/${id}`, {
+      method: 'DELETE'
+    })
+      .then(res => res.json())
+      .then(result => {
+        fetchData();
+        setLoading(false);
+        window.alert("Success")
+      })
+      .catch(error => {
+        console.error(`Error deleting product with ID`);
+      });
+  };
+  // ------------------------------end of handle delete shop----------------------------------------
+
   const handleGetProduct = (e) => {
 
     e.preventDefault();
-    const barCode = e.target.code.value;
+    // const barCode = e.target.code.value;
     const productName = e.target.productname.value;
     const watt = e.target.watt.value;
+    const advance = parseInt(e.target.advance.value);
     const purchaseprice = parseInt(e.target.PurchasePrice.value);
     const quantity = parseInt(e.target.quantity.value);
     const companyName = e.target.companyName.value;
-
+    console.log(advance)
     const productData = {
-      barCode,
       productName,
       watt,
       purchaseprice,
       quantity,
       companyName,
+      advance,
       originalquantity: quantity,
       singleproductprice: Math.round(purchaseprice / quantity)
     }
@@ -183,7 +201,7 @@ export const ApiProvider = ({ children }) => {
       .then(res => res.json())
       .then(results => {
         if (results.length === 0) {
-
+          console.log("first")
           // Create a new totalProduct using the API endpoint
           fetch("https://admin-backend-seven.vercel.app/totalProduct", {
             method: 'POST',
@@ -202,48 +220,91 @@ export const ApiProvider = ({ children }) => {
             });
         }
         else {
-          results?.find(item => {
+          const foundItem = results.find((item) =>
+            item?.productname === productName &&
+            item?.watt === watt &&
+            item?.companyname === companyName.toLowerCase()
+          );
 
-            if (item?.productname === productName &&
-              item?.watt === watt &&
-              item?.companyname === companyName.toLowerCase()) {
-              const newQuantity = { quantity: quantity + (item?.quantity || 0) };
-              // Update the quantity using the API endpoint
-              fetch(`https://admin-backend-seven.vercel.app/UpdateProductQuantity/${item._id}`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(newQuantity)
+          if (foundItem) {
+            console.log("2nd");
+            const newQuantity = { quantity: quantity + (foundItem?.quantity || 0) };
+            // Update the quantity using the API endpoint
+            fetch(`https://admin-backend-seven.vercel.app/UpdateProductQuantity/${foundItem._id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newQuantity)
+            })
+              .then(res => res.json())
+              .then(updatedResult => {
+                // Handle the result of the update, if needed
+              });
+          } else {
+            console.log("3rd");
+            // Create a new totalProduct using the API endpoint
+            fetch("https://admin-backend-seven.vercel.app/totalProduct", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(totalProduct)
+            })
+              .then(res => res.json())
+              .then(createdResult => {
+                window.alert("Success")
+                // Handle the result of the creation, if needed
               })
-                .then(res => {
+              .catch(error => {
+                // Handle any error during the creation process
+              });
+          }
 
-                  return res.json();
-                })
-                .then(updatedResult => {
-                  // Handle the result of the update, if needed
-                });
-            }
-            else {
+          // results?.find(item => {
 
-              // Create a new totalProduct using the API endpoint
-              fetch("https://admin-backend-seven.vercel.app/totalProduct", {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(totalProduct)
-              })
-                .then(res => res.json())
-                .then(createdResult => {
-                  window.alert("Success")
-                  // Handle the result of the creation, if needed
-                })
-                .catch(error => {
-                  // Handle any error during the creation process
-                });
-            }
-          })
+          //   if (item?.productname === productName &&
+          //     item?.watt === watt &&
+          //     item?.companyname === companyName.toLowerCase()) {
+          //     console.log("2nd")
+          //     const newQuantity = { quantity: quantity + (item?.quantity || 0) };
+          //     // Update the quantity using the API endpoint
+          //     fetch(`https://admin-backend-seven.vercel.app/UpdateProductQuantity/${item._id}`, {
+          //       method: 'PUT',
+          //       headers: {
+          //         'Content-Type': 'application/json'
+          //       },
+          //       body: JSON.stringify(newQuantity)
+          //     })
+          //       .then(res => {
+
+          //         return res.json();
+          //       })
+          //       .then(updatedResult => {
+          //         // Handle the result of the update, if needed
+          //       });
+          //   }
+          //   else {
+
+          //     // Create a new totalProduct using the API endpoint
+          //     fetch("https://admin-backend-seven.vercel.app/totalProduct", {
+          //       method: 'POST',
+          //       headers: {
+          //         'Content-Type': 'application/json'
+          //       },
+          //       body: JSON.stringify(totalProduct)
+          //     })
+          //       .then(res => res.json())
+          //       .then(createdResult => {
+          //         window.alert("Success")
+          //         console.log("3nd")
+          //         // Handle the result of the creation, if needed
+          //       })
+          //       .catch(error => {
+          //         // Handle any error during the creation process
+          //       });
+          //   }
+          // })
 
         }
       });
@@ -259,27 +320,28 @@ export const ApiProvider = ({ children }) => {
     }).then(res => res.json()).then(result => {
       e.target.reset();
       setLoading(false)
-      window.alert("Success")
-    })
 
+    })
   }
+
+
   // --------------------End of handle post product-------------------------------
 
   const [selectedCode, setSelectedCode] = useState('');
   const [codeData, setCodeData] = useState(null);
 
-  useEffect(() => {
-    if (selectedCode) {
-      fetch(`https://admin-backend-seven.vercel.app/BarCodeData/${selectedCode}`)
-        .then((response) => response.json())
-        .then((data) => setCodeData(data[0]))
-        .catch((error) => console.error(error));
-    }
-  }, [selectedCode]);
+  // useEffect(() => {
+  //   if (selectedCode) {
+  //     fetch(`https://admin-backend-seven.vercel.app/BarCodeData/${selectedCode}`)
+  //       .then((response) => response.json())
+  //       .then((data) => setCodeData(data[0]))
+  //       .catch((error) => console.error(error));
+  //   }
+  // }, [selectedCode]);
 
-  const handleCodeChange = (event) => {
-    setSelectedCode(event.target.value);
-  };
+  // const handleCodeChange = (event) => {
+  //   setSelectedCode(event.target.value);
+  // };
   // --------------end of id based Product collection-------------------------
 
   const [selectedProduct, setSelectedProduct] = useState('');
@@ -304,7 +366,7 @@ export const ApiProvider = ({ children }) => {
   const handleBillcreating = async (e) => {
     e.preventDefault();
 
-    const barcode = e.target.code.value;
+    // const barcode = e.target.code.value;
     const productname = e.target.productname.value;
     const PurchasePrice = e.target.PurchasePrice.value;
     const Discount = e.target.Discount.value;
@@ -316,24 +378,25 @@ export const ApiProvider = ({ children }) => {
     const SellPrice = TotalPrice - DiscountAmount
     const total = SellPrice;
 
-    await fetch(` https://admin-backend-seven.vercel.app/getProductsByProductNameAndWatt/${productname}/${watt}`)
+    setLoading(true);
+    await fetch(`https://admin-backend-seven.vercel.app/getProductsByProductNameAndWatt/${productname}/${watt}`)
       .then(res => res.json())
       .then(result => {
         setProductCode(result);
-        const barCode = barcode === "Select Product's Code" ? result[0]?._id : barcode;
+        // const barCode = barcode === "Select Product's Code" ? result[0]?._id : barcode;
         const newBillData = {
-          barCode,
+        
           productname,
-          watt,
-          company,
-          TotalPrice,
           PurchasePrice,
-          SellPrice,
           Discount,
           quantity,
+          company,
+          watt,
+          TotalPrice,
+          DiscountAmount,
+          SellPrice,
           total
         };
-
         fetch(`https://admin-backend-seven.vercel.app/getProductsByPnameComNameWatt/${productname.toLowerCase()}/${watt.toLowerCase()}/${company.toLowerCase()}`)
           .then(res => res.json())
           .then(data => {
@@ -357,6 +420,7 @@ export const ApiProvider = ({ children }) => {
                 .then(response => response.json())
                 .then(data => {
                   window.alert("Success")
+                  setLoading(false)
                 })
                 .catch(error => {
                   console.error(error);
@@ -383,12 +447,17 @@ export const ApiProvider = ({ children }) => {
     const name = e.target.name.value;
     const phonenumber = e.target.phonenumber.value;
     const advance = parseInt(e.target.advance.value);
+    const get_discount = parseInt(e.target.discount.value);
     const location = e.target.location.value;
     const shopname = e.target.shopname.value;
     const now = new Date();
     const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    const get_products = JSON.parse(localStorage.getItem('billData'));
+    const get_total = get_products?.reduce((acc, product) => acc + product.total, 0);
+    const discountedTotal = get_total - (get_total * get_discount / 100);
+    
     const userData = {
-      name, location, phonenumber, date, advance, shopname, newbalance: parseInt(advance ? total - advance : total - 0), total,
+      name, location, phonenumber, date, advance, shopname,get_discount,discountedTotal, newbalance: parseInt(advance ? total - advance : total - 0), total,
     }
 
     const mergedObject = {
@@ -605,10 +674,11 @@ export const ApiProvider = ({ children }) => {
     const name = e.target.name.value;
     const number = e.target.number.value;
     const pay = parseInt(e.target.pay.value);
+    const otherbill = parseInt(e.target.otherbill.value);
     const date = e.target.date.value;
     const month = date.slice(0, 7);
     const paybill = {
-      name, number, pay, month, date
+      name, number, pay, otherbill, month, date
     }
     setLoading(true);
     fetch("https://admin-backend-seven.vercel.app/paybill", {
@@ -625,21 +695,22 @@ export const ApiProvider = ({ children }) => {
 
   // -------------------------------------pay employees bill--------------------------------------- 
 
-  const handleshopBill = (e) => {
+  const handleshopBill = (e, _id) => {
     e.preventDefault();
     const shopname = e.target.shopname.value;
     const location = e.target.location.value;
     const pay = parseInt(e.target.pay.value);
+    const electricity = parseInt(e.target.electricity.value);
     const tax = parseInt(e.target.tax.value);
     const date = e.target.date.value;
     const month = date.slice(0, 7);
-    
+
     const paybill = {
-      shopname, location, pay, tax: !tax ? 0 : tax, date, month, total: pay + tax
+      productId: _id, shopname, location, pay, tax: !tax ? 0 : tax, date, month, electricity, total: pay + tax + electricity
     }
 
     setLoading(true);
-    fetch("http://localhost:5000/payshopbill", {
+    fetch("https://admin-backend-seven.vercel.app/payshopbill", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -652,6 +723,27 @@ export const ApiProvider = ({ children }) => {
   }
 
   // -------------------------------------pay shop's bill--------------------------------------- 
+  const handle_comapany_bill_pay = (e, product_id) => {
+    e.preventDefault();
+    const get_advance = parseInt(e.target.advance.value);
+    setLoading(true);
+    fetch(`http://localhost:5000/getProductById/${product_id}`).then(res => res.json()).then(product => {
+      const advance = (product?.advance || 0) + get_advance;
+
+      fetch(`http://localhost:5000/Upadate_Product_Remaining_Balance/${product_id}`, {
+        method: "PUT",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ advance })
+      }).then(res => res.json()).then(result => {
+        setLoading(false)
+        setIsModalOpen(false)
+      })
+    })
+  }
+
+  // -------------------------------------handle comapany bill pay--------------------------------------- 
 
   function getMonthName(number) {
     const months = [
@@ -833,7 +925,7 @@ export const ApiProvider = ({ children }) => {
 
     const getshopbill = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/getShopPaymentByDate/${formatDate(month)}`);
+        const response = await fetch(`https://admin-backend-seven.vercel.app/getShopPaymentByDate/${formatDate(month)}`);
         const result = await response.json();
         setShopBillbyDate(result);
       } catch (error) {
@@ -894,9 +986,10 @@ export const ApiProvider = ({ children }) => {
       handleBillcreating,
       codeData,
       setShop,
+      handleshopDelete,
       selectedCode,
       customarbills,
-      handleCodeChange,
+      handle_comapany_bill_pay,
       getBillByID
     }}>
       {children}

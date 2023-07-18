@@ -91,14 +91,23 @@ function CashMemo() {
                             ))}
                         </tbody>
                         <tfoot>
+                            
                             <tr>
                                 <td colSpan="5" className="text-right font-bold py-2 px-4">Total:</td>
                                 <td className="py-2 font-bold">{total}</td>
                             </tr>
+
                             <tr>
                                 <td colSpan="5" className="text-right font-bold py-2 px-4">Advance:</td>
                                 <td className="py-2 text-white font-bold">
                                     <input type="number" name='advance' className="border text-black border-gray-300 p-2 rounded-md w-full" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colSpan="5" className="text-right font-bold py-2 px-4">Discount:</td>
+                                <td className="py-2 text-white font-bold">
+                                    <input type="number" name='discount' className="border text-black border-gray-300 p-2 rounded-md w-full" />
                                 </td>
                             </tr>
 
@@ -112,5 +121,3 @@ function CashMemo() {
 }
 
 export default CashMemo;
-
-

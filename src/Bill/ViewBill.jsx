@@ -7,10 +7,11 @@ function ViewBill() {
     useEffect(() => {
         fetch(`https://admin-backend-seven.vercel.app/getbills/${id}`)
             .then(response => {
-                console.log(response);
                 return response.json();
             })
-            .then(res => setCreatedBill(res));
+            .then(res => {
+                console.log(createdBill)
+                setCreatedBill(res)});
     }, [])
 
     const componentRef = useRef();
@@ -66,7 +67,7 @@ function ViewBill() {
 
                             {
                             createdBill?.products?.map((product, index) => (
-                                <tr key={product.id}>
+                                <tr key={product._id}>
                                     <td className="py-2 text-black-2 px-4">{index + 1}</td>
                                     <td className="py-2 text-black-2 px-4">{product?.productname}</td>
                                     <td className="py-2 text-black-2 px-4">{product?.quantity}</td>
@@ -86,8 +87,13 @@ function ViewBill() {
                                 <td className="py-2 text-black-2 font-bold px-4"><input type="text" className="p-2 rounded-md w-24" readOnly defaultValue={createdBill?.advance} /></td>
                             </tr>
                             <tr>
+                                <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Advance:</td>
+                                <td className="py-2 text-black-2 font-bold px-4"><input type="text" className="p-2 rounded-md w-24" readOnly defaultValue={createdBill?.get_discount} /></td>
+                            </tr>
+                           
+                            <tr>
                                 <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Remaining Tk:</td>
-                                <td className="py-2 text-black-2 font-bold px-4">{createdBill?.newbalance}</td>
+                                <td className="py-2 text-black-2 font-bold px-4">{createdBill?.discountedtotal}</td>
                             </tr>
                         </tfoot>
                     </table>

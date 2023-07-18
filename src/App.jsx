@@ -3,9 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import Analytics from './pages/Dashboard/Analytics'
 import Calendar from './pages/Calendar'
 import Profile from './Employ Management/Profile'
-import FormElements from './pages/Form/FormElements'
 import Settings from './pages/Settings'
-import Chart from './pages/Chart'
 import Alerts from './pages/UiElements/Alerts'
 import Buttons from './pages/UiElements/Buttons'
 import SignIn from './pages/Authentication/SignIn'
@@ -28,6 +26,7 @@ import PrintInstant from './Bill/PrintInstant'
 import ReturnProduct from './ReturnProduct/ReturnProduct'
 import StockIn from './Stock/StockIn'
 import AllShop from './Employ Management/AllShop'
+import ShowShopDetails from './Employ Management/ShowShopDetails'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -53,7 +52,6 @@ const App = () => {
             <Route exact path='/' element={<PrivateRoute><Analytics /></PrivateRoute>} />
             <Route path='/calendar' element={<PrivateRoute><Calendar /></PrivateRoute>} />
             <Route path='/profile' element={<PrivateRoute> <Profile /></PrivateRoute>} />
-            <Route path='/forms/form-elements' element={<FormElements />} />
             <Route path='/addcompany' element={<PrivateRoute><AddCompany /></PrivateRoute>} />
             <Route path='/returnProduct' element={<PrivateRoute><ReturnProduct /></PrivateRoute>} />
             <Route path='/addemploy' element={<PrivateRoute><AddEmploy /></PrivateRoute>} />
@@ -72,6 +70,11 @@ const App = () => {
             />
 
             <Route
+              path='/shop_details/:id'
+              element={<PrivateRoute><ShowShopDetails></ShowShopDetails></PrivateRoute>}
+            />
+
+            <Route
               path='/details/:id'
               element={<PrivateRoute><Profile></Profile></PrivateRoute>}
             />
@@ -81,7 +84,6 @@ const App = () => {
             <Route path='/allcompanies' element={<AllCompany />} />
             <Route path='/allproducts' element={<AllProduct />} />
             <Route path='/settings' element={<Settings />} />
-            <Route path='/chart' element={<Chart />} />
             <Route path='/ui/alerts' element={<Alerts />} />
             <Route path='/ui/buttons' element={<Buttons />} />
             <Route path='/auth/signin' element={<SignIn />} />

@@ -1,9 +1,9 @@
 import React, { useEffect, useContext } from "react";
 import Breadcrumb from '../../components/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
-import Table from "../../components/Table";
 import CircleLoader from "../../components/CircleLoader";
 import { ApiContext } from "../../ApiProvider/ApiProvider";
+import StockData from "../Dashboard/StockInData";
 
 const AddProduct = () => {
   const { handleGetProduct, allcompany, loading } = useContext(ApiContext);
@@ -32,7 +32,7 @@ const AddProduct = () => {
                     Product's Code
                   </label>
                   <input
-              
+
                     className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                     placeholder="Product's Code"
                     type="text"
@@ -58,14 +58,15 @@ const AddProduct = () => {
                 WATT
               </label>
               <input
-               
+
                 name='watt'
                 type='text'
+                defaultValue={0}
                 placeholder='Watt'
                 className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
               />
             </div>
-            
+
 
             <div>
               <label className='mb-3 block text-black dark:text-white'>
@@ -104,6 +105,24 @@ const AddProduct = () => {
                 }}
               />
             </div>
+            <div>
+              <label className='mb-3 block text-black dark:text-white'>
+                Advance
+              </label>
+              <input
+                type="number"
+                name="advance"
+                placeholder='advance'
+                className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                onKeyPress={(event) => {
+                  const keyCode = event.which || event.keyCode;
+                  const keyValue = String.fromCharCode(keyCode);
+                  if (/\D/.test(keyValue)) { // Allow only numbers
+                    event.preventDefault();
+                  }
+                }}
+              />
+            </div>
             {/* <!-- Select input --> */}
             <div>
               <label className='mb-3 block text-black dark:text-white'>
@@ -126,7 +145,7 @@ const AddProduct = () => {
 
           </form>
         </div>
-        <Table></Table>
+        <StockData></StockData>
       </div>
     </DefaultLayout>
   );
