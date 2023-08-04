@@ -5,13 +5,18 @@ function ViewBill() {
     const { id } = useParams();
     const [createdBill, setCreatedBill] = useState({})
     useEffect(() => {
-        fetch(`https://admin-backend-seven.vercel.app/getbills/${id}`)
+        fetch(`http://localhost:5000/getbills/${id}`, {
+            method: 'GET',
+            headers: {
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
             .then(response => {
                 return response.json();
             })
             .then(res => {
-                console.log(createdBill)
-                setCreatedBill(res)});
+                setCreatedBill(res)
+            });
     }, [])
 
     const componentRef = useRef();
@@ -58,23 +63,25 @@ function ViewBill() {
                             <tr className="bg-yellow-600 text-black-2">
                                 <th className="py-2 px-4 text-left">#</th>
                                 <th className="py-2 px-4 text-left">Product Name</th>
+                                <th className="py-2 px-4 text-left">Company Name</th>
                                 <th className="py-2 px-4 text-left">Quantity</th>
-                                <th className="py-2 px-4 text-left">Price</th>
+
                                 <th className="py-2 px-4 text-left">Taka</th>
                             </tr>
                         </thead>
                         <tbody>
 
                             {
-                            createdBill?.products?.map((product, index) => (
-                                <tr key={product._id}>
-                                    <td className="py-2 text-black-2 px-4">{index + 1}</td>
-                                    <td className="py-2 text-black-2 px-4">{product?.productname}</td>
-                                    <td className="py-2 text-black-2 px-4">{product?.quantity}</td>
-                                    <td className="py-2 text-black-2 px-4">{product?.SellPrice}</td>
-                                    <td className="py-2 text-black-2 px-4">{product?.total}</td>
-                                </tr>
-                            ))
+                                createdBill?.products?.map((product, index) => (
+                                    <tr key={product._id}>
+                                        <td className="py-2 text-black-2 px-4">{index + 1}</td>
+                                        <td className="py-2 text-black-2 px-4">{product?.productname}</td>
+                                        <td className="py-2 text-black-2 px-4">{product?.company}</td>
+                                        <td className="py-2 text-black-2 px-4">{product?.quantity}</td>
+
+                                        <td className="py-2 text-black-2 px-4">{product?.total}</td>
+                                    </tr>
+                                ))
                             }
                         </tbody>
                         <tfoot>
@@ -87,13 +94,13 @@ function ViewBill() {
                                 <td className="py-2 text-black-2 font-bold px-4"><input type="text" className="p-2 rounded-md w-24" readOnly defaultValue={createdBill?.advance} /></td>
                             </tr>
                             <tr>
-                                <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Advance:</td>
+                                <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Discount:</td>
                                 <td className="py-2 text-black-2 font-bold px-4"><input type="text" className="p-2 rounded-md w-24" readOnly defaultValue={createdBill?.get_discount} /></td>
                             </tr>
-                           
+
                             <tr>
                                 <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Remaining Tk:</td>
-                                <td className="py-2 text-black-2 font-bold px-4">{createdBill?.discountedtotal}</td>
+                                <td className="py-2 text-black-2 font-bold px-4">{createdBill?.newbalance}</td>
                             </tr>
                         </tfoot>
                     </table>

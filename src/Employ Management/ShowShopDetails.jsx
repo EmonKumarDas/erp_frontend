@@ -10,12 +10,17 @@ function ShowShopDetails() {
     const { id } = useParams();
     const [shopDetails, setShopDetails] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:5000/getShopById/${id}`)
+        fetch(`http://localhost:5000/getShopById/${id}`, {
+            method: "GET",
+            headers: {
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
+            }
+        })
             .then(response => {
                 return response.json();
             })
             .then(res => {
-                console.log(res)
+
                 setShopDetails(res)
             });
     }, [])

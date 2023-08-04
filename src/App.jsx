@@ -27,6 +27,7 @@ import ReturnProduct from './ReturnProduct/ReturnProduct'
 import StockIn from './Stock/StockIn'
 import AllShop from './Employ Management/AllShop'
 import ShowShopDetails from './Employ Management/ShowShopDetails'
+import ReturnProducts from './ReturnProduct/ReturnProducts'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -54,6 +55,7 @@ const App = () => {
             <Route path='/profile' element={<PrivateRoute> <Profile /></PrivateRoute>} />
             <Route path='/addcompany' element={<PrivateRoute><AddCompany /></PrivateRoute>} />
             <Route path='/returnProduct' element={<PrivateRoute><ReturnProduct /></PrivateRoute>} />
+            <Route path='/ReturnProducts' element={<PrivateRoute><ReturnProducts /></PrivateRoute>} />
             <Route path='/addemploy' element={<PrivateRoute><AddEmploy /></PrivateRoute>} />
             <Route path='/addproduct' element={<PrivateRoute><AddProduct /></PrivateRoute>} />
             <Route path='/bill' element={<PrivateRoute><CreateBill /></PrivateRoute>} />
@@ -79,13 +81,13 @@ const App = () => {
               element={<PrivateRoute><Profile></Profile></PrivateRoute>}
             />
 
-            <Route path='/productcategory' element={<ProductsCategory />} />
-            <Route path='/allbills' element={<BillsTable />} />
-            <Route path='/allcompanies' element={<AllCompany />} />
-            <Route path='/allproducts' element={<AllProduct />} />
-            <Route path='/settings' element={<Settings />} />
-            <Route path='/ui/alerts' element={<Alerts />} />
-            <Route path='/ui/buttons' element={<Buttons />} />
+            <Route path='/productcategory' element={<PrivateRoute><ProductsCategory /></PrivateRoute>} />
+            <Route path='/allbills' element={<PrivateRoute><BillsTable /></PrivateRoute>} />
+            <Route path='/allcompanies' element={<PrivateRoute><AllCompany /></PrivateRoute>} />
+            <Route path='/allproducts' element={<PrivateRoute><AllProduct /></PrivateRoute>} />
+            <Route path='/settings' element={<PrivateRoute><Settings /></PrivateRoute>} />
+            <Route path='/ui/alerts' element={<PrivateRoute><Alerts /></PrivateRoute>} />
+            <Route path='/ui/buttons' element={<PrivateRoute><Buttons /></PrivateRoute>} />
             <Route path='/auth/signin' element={<SignIn />} />
 
           </Routes>
@@ -95,4 +97,4 @@ const App = () => {
   )
 }
 
-export default App
+export default App;

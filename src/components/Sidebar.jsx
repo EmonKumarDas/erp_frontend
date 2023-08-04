@@ -519,6 +519,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                       Return Product
                                     </NavLink>
                                   </li>
+                                  <li>
+                                    <NavLink
+                                      to='/ReturnProducts'
+                                      className={({ isActive }) =>
+                                        'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                        (isActive && '!text-white')
+                                      }
+                                    >
+                                      All Return Products
+                                    </NavLink>
+                                  </li>
                                 </ul>
                               </div>
                               {/* <!-- Dropdown Menu End --> */}
@@ -795,7 +806,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                             fill='white'
                           />
                         </svg>
-                        Bill
+                        Sells
                         <svg
                           className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${open && 'rotate-180'
                             }`}
@@ -838,7 +849,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              All Bills
+                              All Sells
                             </NavLink>
                           </li>
                         </ul>

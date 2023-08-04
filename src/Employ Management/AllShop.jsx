@@ -21,7 +21,6 @@ function AllShop() {
     }
     return (
         <DefaultLayout>
-            {/* <Breadcrumb pageName='All Shops' /> */}
             <div className="overflow-x-auto">
                 <div className="px-4 shadow-2 pb-4 rounded bg-white dark:border-strokedark dark:bg-boxdark">
                     <div className='border-b border-stroke py-4 dark:border-strokedark'>

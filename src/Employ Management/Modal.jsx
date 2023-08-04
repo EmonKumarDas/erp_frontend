@@ -1,13 +1,14 @@
 import React, { useContext } from 'react';
 import { ApiContext } from '../ApiProvider/ApiProvider';
+import { userContext } from '../pages/Authentication/AuthProvider';
 
 const Modal = ({ employData }) => {
     const { isModalOpen, setIsModalOpen, handlePayBill, loading } = useContext(ApiContext);
 
     const handlePayBillform = (e) => {
         handlePayBill(e)
-
     }
+
     return (
         <div>
             {isModalOpen ? (
@@ -46,7 +47,7 @@ const Modal = ({ employData }) => {
                                         Salary
                                     </label>
                                     <input
-                                        required
+
                                         name='pay'
                                         type='text'
                                         placeholder='salary'
@@ -58,7 +59,7 @@ const Modal = ({ employData }) => {
                                         Other bill
                                     </label>
                                     <input
-                                        required
+
                                         name='otherbill'
                                         type='text'
                                         placeholder='Other bill'
@@ -70,6 +71,7 @@ const Modal = ({ employData }) => {
                                         Date
                                     </label>
                                     <input
+                                        required
                                         name='date'
                                         type='date'
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'

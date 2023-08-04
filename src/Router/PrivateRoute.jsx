@@ -5,7 +5,8 @@ import CircleLoader from '../../src/components/CircleLoader';
 
 const PrivateRoute = ({ children }) => {
 
-    const { user, loading } = useContext(userContext);
+    const { user, loading,logout } = useContext(userContext);
+    
     const location = useLocation();
     if (loading) {
         return <CircleLoader></CircleLoader>;

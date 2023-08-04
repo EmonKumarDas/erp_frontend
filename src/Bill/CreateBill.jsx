@@ -7,14 +7,9 @@ import { ToastContainer } from 'react-toastify';
 import CircleLoader from '../components/CircleLoader';
 
 const CreateBill = () => {
-    const { data, handleCodeChange, allcompany, loading, selectedProduct,
+    const { data, allcompany, loading, selectedProduct,
         handleProductChange, codeData, ProductData, handleBillcreating } = useContext(ApiContext);
 
-    // const handleProdcutCodeChange = (e) => {
-    //     handleCodeChange(e)
-
-
-    // }
     const handleProduct = (e) => {
         handleProductChange(e)
 
@@ -48,24 +43,6 @@ const CreateBill = () => {
                     </div>
                     <form onSubmit={handleBillcreate} className='flex flex-col gap-5.5 p-6.5'>
                         <div className='grid gap-4'>
-                            {/* <div>
-                                <label className='mb-3 block text-black dark:text-white'>Product's Code (BarCode)</label>
-                                <select
-                                    required
-                                    className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
-                                    name='code'
-                                    value={!selectedCode ? selectedProduct?.barcode : selectedCode}
-                                    onChange={handleProdcutCodeChange}
-                                >
-                                    <option selected>Select Product's Code (BarCode)</option>
-                                    {data.map((code, index) => (
-                                        <option key={index} value={code.barcode}>
-                                            {code.barcode}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div> */}
-
                             <div>
                                 <label className='mb-3 block text-black dark:text-white'>Select Company's Name</label>
                                 <select

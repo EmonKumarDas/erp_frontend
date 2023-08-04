@@ -1,10 +1,11 @@
 import React, { useContext, useState } from 'react'
-import UserFive from '../images/user/user-05.png'
+
 import DefaultLayout from '../layout/DefaultLayout'
 import { ApiContext } from '../ApiProvider/ApiProvider'
 import Modal from '../Employ Management/Modal'
 import CircleLoader from './CircleLoader'
 import { Link } from 'react-router-dom'
+import { userContext } from '../pages/Authentication/AuthProvider'
 
 
 const ChatCard = () => {
@@ -32,27 +33,27 @@ const ChatCard = () => {
 
                   className='flex items-center gap-5 py-3 px-7.5 hover:bg-gray-3 dark:hover:bg-meta-4'
                 >
-                  <div className='relative h-14 w-14 rounded-full'>
-                    <img src={UserFive} alt='User' />
-                    <span className='absolute right-0 bottom-0 h-3.5 w-3.5 rounded-full border-2 border-white bg-meta-6'></span>
-                  </div>
+
 
                   <div className='flex flex-1 items-center justify-between'>
                     <div>
-                      <h5 className='font-medium'>{employ?.name}</h5>
+                      <h5 className='font-medium'>{employ?.name ? employ?.name : employ?.email}</h5>
                       <p>
                         <span className='text-sm'>{employ?.number}</span>
                       </p>
                     </div>
                   </div>
+                  {
+                    employ?.email === "em@gmail.com" ?
+                     <button disabled className=' bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>Admin</button>
+                      : <>
+                        <button onClick={() => handlePayClick(employ._id)} className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>PAY</button>
 
-                  <button onClick={() => handlePayClick(employ._id)} className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>PAY</button>
-                  
-                  <Link to={`/details/${employ.number}`}>
-                    <button className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
-                  </Link >
-                  
-                  {/* <button className='bg-meta-5 text-white px-4 py-2 my-2 rounded font-bold'>EDIT</button> */}
+                        <Link to={`/details/${employ.number}`}>
+                          <button className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
+                        </Link >
+                      </>
+                  }
                 </a>
               </div>
             ))

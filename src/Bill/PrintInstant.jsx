@@ -1,6 +1,5 @@
-import React, { useContext, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
-
 
 function PrintInstant() {
 
@@ -18,6 +17,24 @@ function PrintInstant() {
         }
     });
 
+    const handleCancel = () => {
+        localStorage.removeItem('mergedData');
+        localStorage.removeItem('billData');
+    }
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+          // Remove 'mergedData' and 'billData' from localStorage
+          localStorage.removeItem('mergedData');
+          localStorage.removeItem('billData');
+        };
+    
+        window.addEventListener('beforeunload', handleBeforeUnload);
+    
+        return () => {
+          // Clean up the event listener when the component is unmounted
+          window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+      }, []);
     return (
         <div className="bg-white rounded-lg shadow-lg w-[90vw] m-auto my-5">
             <div ref={componentRef} >
@@ -87,7 +104,7 @@ function PrintInstant() {
                             </tr>
                             <tr>
                                 <td colSpan="4" className="text-right font-bold text-black-2 py-2 px-4">Remaining Tk:</td>
-                                <td className="py-2 text-black-2 font-bold px-4">{bill?.discountedTotal}</td>
+                                <td className="py-2 text-black-2 font-bold px-4">{bill?.newbalance}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -97,6 +114,7 @@ function PrintInstant() {
 
             </div>
             <button onClick={handlePrint} className='hover:bg-[#161830c9] w-full text-center bg-black p-5 mt-3 text-white font-bold text-xl'>Print</button>
+            <button onClick={handleCancel} className='hover:bg-[#161830c9] w-full text-center bg-meta-1 p-5 mt-3 text-white font-bold text-xl'>Cancel</button>
         </div>
 
     );

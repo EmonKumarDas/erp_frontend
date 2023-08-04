@@ -1,8 +1,4 @@
 import React, { useState } from 'react'
-
-import LogoIcon from '../images/logo/logo-icon.svg'
-import DropdownNotification from './DropdownNotification'
-import DropdownMessage from './DropdownMessage'
 import DropdownUser from './DropdownUser'
 import DarkModeSwitcher from './DarkModeSwitcher'
 import { Link } from 'react-router-dom'
@@ -59,9 +55,7 @@ const Header = (
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
 
-          <Link className='block flex-shrink-0 lg:hidden' to='/'>
-            <img src={LogoIcon} alt='Logo' />
-          </Link>
+        
         </div>
 
         <div className='hidden sm:block'>
@@ -106,13 +100,6 @@ const Header = (
             <DarkModeSwitcher />
             {/* <!-- Dark Mode Toggler --> */}
 
-            {/* <!-- Notification Menu Area --> */}
-            <DropdownNotification />
-            {/* <!-- Notification Menu Area --> */}
-
-            {/* <!-- Chat Notification Area --> */}
-            <DropdownMessage />
-            {/* <!-- Chat Notification Area --> */}
           </ul>
 
           {/* <!-- User Area --> */}

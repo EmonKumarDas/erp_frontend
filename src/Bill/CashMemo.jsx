@@ -12,23 +12,6 @@ function CashMemo() {
     const handleBill = (e) => {
         handleBillMemo(e, products, total)
     }
-    // const handleDelete = (barCode) => {
-    //     // Retrieve existing data from local storage
-    //     let existingData = JSON.parse(localStorage.getItem('billData'));
-
-    //     // If there's no existing data, create an empty array
-    //     if (!Array.isArray(existingData)) {
-    //         existingData = [];
-    //     }
-
-    //     // Filter out the item with the matching barcode
-    //     const updatedData = existingData.filter((item) => item.barCode !== barCode);
-
-    //     // Save updated data to local storage
-    //     localStorage.setItem('billData', JSON.stringify(updatedData));
-
-
-    // };
 
     return (
         <div className="container p-2 mx-auto sm:p-4 dark:text-gray-100">
@@ -42,10 +25,9 @@ function CashMemo() {
                         required
                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                         name="shopname"
-                        // value={!selectedProduct ? codeData?.productname : selectedProduct}
-                        // onChange={handleProduct}
+                      
                     >
-                        <option selected>Select Product's Name</option>
+                        <option selected>Select Shop</option>
                         {shop.map((product) => (
                             <option >
                                 {product?.shopname}
@@ -78,8 +60,8 @@ function CashMemo() {
                         <tbody>
 
 
-                            {products.map((product, index) => (
-                                <tr className="border-b border-opacity-20 dark:border-gray-700 dark:bg-gray-900">
+                            {products?.map((product, index) => (
+                                <tr key={product?._id} className="border-b border-opacity-20 dark:border-gray-700 dark:bg-gray-900">
                                     <td className="p-3"><p>{index + 1}</p></td>
                                     <td className="p-3"><p>{product.productname}</p></td>
                                     <td className="p-3"><p>{product.quantity}</p></td>
