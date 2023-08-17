@@ -2,12 +2,18 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { ApiContext } from "../../ApiProvider/ApiProvider";
 import CircleLoader from "../../components/CircleLoader";
+import BillModal from "../../Bill/BillModal";
 
 const ITEMS_PER_PAGE = 10;
 
 const Credit = () => {
-  const { customarbills, loading } = useContext(ApiContext);
-  
+  const { customarbills, loading, setIsModalOpen } = useContext(ApiContext);
+  const [customarbill, setCustomarbill] = useState([]);
+  const handlebillEdit = (id) => {
+    setIsModalOpen(true);
+    const CustomarBill = customarbills.find((customar) => customar._id === id);
+    setCustomarbill(CustomarBill);
+  };
   const filteredData = customarbills.filter(
     (entry) => entry.newbalance !== 0 && entry.newbalance !== null
   );
@@ -89,9 +95,8 @@ const Credit = () => {
                 <button
                   key={index}
                   onClick={() => handlePageChange(index + 1)}
-                  className={`mx-1 bg-secondary px-4 py-2  ${
-                    currentPage === index + 1 ? "bg-blue-500 text-black-2" : "bg-gray-300"
-                  }`}
+                  className={`mx-1 bg-secondary px-4 py-2  ${currentPage === index + 1 ? "bg-blue-500 text-black-2" : "bg-gray-300"
+                    }`}
                 >
                   {index + 1}
                 </button>
@@ -99,6 +104,7 @@ const Credit = () => {
             </div>
           )}
         </div>
+        <BillModal customarbill={customarbill} />
       </div>
     </>
   );

@@ -66,15 +66,11 @@ const ReturnProducts = () => {
                                                 <td className="border px-4 py-2">{product?.watt}</td>
                                                 <td className="border px-4 py-2">{product?.company}</td>
                                                 <td className="border px-4 py-2">{product?.quantity}</td>
-                                                <td className="border px-4 py-2">{product?.price}%</td>
+                                                <td className="border px-4 py-2">{product?.price}</td>
                                                 <td className="border px-4 py-2">{product?.TotalAmount}</td>
                                                 <td className="border px-4 py-2">{product?.date}</td>
-                                               
-                                                <td className="border hover:bg-black cursor-pointer font-extrabold text-warning px-4 py-2">
-                                                    <Link to={`/bills/${product?._id}`}>View</Link>
-                                                </td>
                                                 <td className="border hover:bg-black cursor-pointer font-extrabold text-warning px-4 py-2" onClick={() => handlebillEdit(product?._id)}>Edit</td>
-                                                <td className="border hover:bg-black cursor-pointer font-extrabold text-warning px-4 py-2">Call</td>
+                                                <td className="border hover:bg-black cursor-pointer font-extrabold text-danger px-4 py-2">Delete</td>
                                             </tr>
                                         ))}
                                     </tbody>

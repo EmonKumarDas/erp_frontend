@@ -3,11 +3,11 @@ import { createContext, useState, useEffect } from 'react';
 import { userContext } from '../pages/Authentication/AuthProvider';
 import { toast } from 'react-toastify';
 import useToken from '../hooks/UseToken';
-
+import { v4 as uuidv4 } from 'uuid';
 export const ApiContext = createContext();
 
 export const ApiProvider = ({ children }) => {
-  const { user, logout } = useContext(userContext)
+  const { user } = useContext(userContext)
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +17,9 @@ export const ApiProvider = ({ children }) => {
   if (token) {
     window.location.href = '/'
   }
+
+  // const userEmail = user?.email;
+
 
   // ----------------------------+++++++++++start++++++++++++++---------------------------------------------
 
@@ -58,13 +61,13 @@ export const ApiProvider = ({ children }) => {
 
     fetchData();
 
-    const interval = setInterval(fetchData, 1000);
+    const interval = setInterval(fetchData, 5000);
 
     return () => {
       clearInterval(interval);
     };
   }, [user?.email]);
-  // Make sure to use user?.email in the dependency array
+
 
 
   // ------------------------------end of get Product----------------------------------------
@@ -177,19 +180,18 @@ export const ApiProvider = ({ children }) => {
         });
         const result = await response.json();
         setShop(result);
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error);
       }
     };
 
-    fetchData();
-    const interval = setInterval(() => {
-      fetchData();
-    }, 1000);
+    fetchData(); // Fetch data immediately on mount
+
+    const interval = setInterval(fetchData, 5000); // Fetch data every 5 seconds
 
     return () => clearInterval(interval);
   }, []);
+
 
   // ------------------------------end of get shop----------------------------------------
   const [allcompany, setAllcompany] = useState([]);
@@ -256,7 +258,6 @@ export const ApiProvider = ({ children }) => {
   // ------------------------------end of handle delete shop----------------------------------------
 
   const handleGetProduct = (e) => {
-
     e.preventDefault();
     const barCode = e.target.code.value;
     const productName = e.target.productname.value;
@@ -720,7 +721,7 @@ export const ApiProvider = ({ children }) => {
 
     fetchData();
 
-    const interval = setInterval(fetchData, 1000);
+    const interval = setInterval(fetchData, 5000);
 
     return () => {
       clearInterval(interval);
@@ -853,12 +854,12 @@ export const ApiProvider = ({ children }) => {
     fetchData(); // Initial fetch
     setLoading(false); // Set loading to false after the initial fetch
 
-    const interval = setInterval(fetchData, 1000); // Fetch data every second
+    const interval = setInterval(fetchData, 5000); // Fetch data every second
 
     return () => {
       clearInterval(interval);
     };
-  }, [user?.email]); // Add 
+  }, [user?.email]); // Add
 
   // --------------------------------get created bills data----------------------------------
 
@@ -922,27 +923,33 @@ export const ApiProvider = ({ children }) => {
 
 
 
-  // -------------------------------------add employ--------------------------------------- 
+  // -------------------------------------add employ---------------------------------------
   const [employees, setEmployees] = useState([]);
   useEffect(() => {
-    // if (!user?.email) {
-    //   return;
-    // }
-    const interval = setInterval(() => {
-      fetch("http://localhost:5000/getUsers", {
-        method: 'GET',
-        headers: {
-          authorization: `bearer ${localStorage.getItem('accessToken')}`
-        }
-      }).then(res => res.json()).then(result => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/getUsers", {
+          method: 'GET',
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        const result = await response.json();
         setEmployees(result);
-      });
-    }, 5000);
+      } catch (error) {
+        // Handle errors if needed
+      }
+    };
 
-    return () => clearInterval(interval);
+    fetchData(); // Fetch data initially
+
+    const interval = setInterval(fetchData, 5000); // Fetch data every 5 seconds
+
+    return () => clearInterval(interval); // Cleanup function to clear the interval when the component is unmounted
   }, []);
 
-  // -------------------------------------get all employees--------------------------------------- 
+
+  // -------------------------------------get all employees---------------------------------------
 
   const handlePayBill = (e) => {
     e.preventDefault();
@@ -969,7 +976,7 @@ export const ApiProvider = ({ children }) => {
     })
   }
 
-  // -------------------------------------pay employees bill--------------------------------------- 
+  // -------------------------------------pay employees bill---------------------------------------
 
   const handleshopBill = (e, _id) => {
     e.preventDefault();
@@ -998,7 +1005,7 @@ export const ApiProvider = ({ children }) => {
     })
   }
 
-  // -------------------------------------pay shop's bill--------------------------------------- 
+  // -------------------------------------pay shop's bill---------------------------------------
   const handle_comapany_bill_pay = (e, product_id) => {
     e.preventDefault();
     const get_advance = parseInt(e.target.advance.value);
@@ -1027,7 +1034,7 @@ export const ApiProvider = ({ children }) => {
     })
   }
 
-  // -------------------------------------handle comapany bill pay--------------------------------------- 
+  // -------------------------------------handle comapany bill pay---------------------------------------
 
   function getMonthName(number) {
     const months = [
@@ -1080,7 +1087,7 @@ export const ApiProvider = ({ children }) => {
       });
   };
 
-  // -------------------------------------update customar bill--------------------------------------- 
+  // -------------------------------------update customar bill---------------------------------------
 
   const [getTotalSaleByDate, setGetTotalSaleByDate] = useState([]);
   const [getTotalRevenueByDate, setGetTotalRevenueByDate] = useState([]);
@@ -1217,78 +1224,61 @@ export const ApiProvider = ({ children }) => {
   // --------------------------------get Total Product purchase price By Date-------------------------------------
 
   const [stockIn, setStockIn] = useState([]);
+
   useEffect(() => {
     const fetchTotalProduct = async () => {
       try {
-
         const response = await fetch(`http://localhost:5000/getTotalProduct/${user?.email}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
           }
         });
         const result = await response.json();
         setStockIn(result);
-
+        setLoading(false); // Set loading state to false after data is fetched if needed
       } catch (error) {
-
+        // Handle errors if needed
       }
     };
 
-    fetchTotalProduct();
+    fetchTotalProduct(); // Fetch data immediately on mount
 
-    const interval = setInterval(() => {
-      // fetchData();
-      fetchTotalProduct();
-    }, 1000);
+    // No need for an interval if you want to fetch data only once
 
-    return () => {
-
-      clearInterval(interval)
-      setLoading(false)
-    };
-
-  }, [stockIn]);
+  }, [user?.email]);
 
   // *******************end of get total product******************************************
   const [ReturnProducts, setReturnProducts] = useState([]);
   useEffect(() => {
-    const fetchTotalProduct = async () => {
+    const fetchReturnProducts = async () => {
       try {
-
         const response = await fetch(`http://localhost:5000/ReturnProductCollection/${user?.email}`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
           }
         });
         const result = await response.json();
         setReturnProducts(result);
-
+        setLoading(false); // Set loading state to false after data is fetched
       } catch (error) {
-
+        // Handle errors if needed
       }
     };
 
-    fetchTotalProduct();
+    fetchReturnProducts(); // Fetch data immediately on mount
 
-    const interval = setInterval(() => {
-      // fetchData();
-      fetchTotalProduct();
-    }, 1000);
+    const interval = setInterval(fetchReturnProducts, 5000); // Fetch data every 5 seconds
 
     return () => {
-
-      clearInterval(interval)
-      setLoading(false)
+      clearInterval(interval);
     };
-
-  }, [stockIn]);
+  }, [user?.email]);
 
   // *******************end of get total product******************************************
 
   const [shopBillbyDate, setShopBillbyDate] = useState([]);
-
   useEffect(() => {
     const getshopbill = async () => {
       try {
@@ -1300,49 +1290,51 @@ export const ApiProvider = ({ children }) => {
         });
         const result = await response.json();
         setShopBillbyDate(result);
-      }
-
-      catch (error) {
-
+      } catch (error) {
+        // Handle errors if needed
       }
     };
 
-    getshopbill();
+    getshopbill(); // Fetch data initially
 
     const interval = setInterval(() => {
-      getshopbill();
-    }, 1000);
+      getshopbill(); // Fetch data whenever getSelectedDate or month changes
+    }, 5000); // Fetch data every 5 seconds (adjust the interval time as needed)
 
-    return () => clearInterval(interval);
-  }, [shopBillbyDate]);
-
+    return () => {
+      clearInterval(interval); // Clear the interval when the component is unmounted
+    };
+  }, [getSelectedDate, month, user?.email]);
   // --------------------------- get return products -------------------------------
   const [sellOut, setSellOut] = useState([]);
 
   useEffect(() => {
     try {
-      // if (!user?.email) {
-      //   return;
-      // }
       fetch(`http://localhost:5000/getSellByDate/${getSelectedDate !== "" ? getSelectedDate : month}`, {
         method: 'GET',
         headers: {
           authorization: `bearer ${localStorage.getItem('accessToken')}`
         }
       })
-        .then(res => res.json())
-        .then(result => {
-          setSellOut(result)
+        .then((res) => res.json())
+        .then((result) => {
+          setSellOut(result);
         })
+        .catch((error) => {
+          console.error(error); // Handle errors here
+        });
     } catch (error) {
       console.error(error);
     }
-  }, [sellOut])
+  }, [getSelectedDate, month]);
 
   const StockOut = sellOut?.reduce((acc, curr) => {
-    return acc + curr.products?.reduce((total, product) => {
-      return total + parseInt(product.quantity);
-    }, 0);
+    return (
+      acc +
+      curr.products?.reduce((total, product) => {
+        return total + parseInt(product.quantity);
+      }, 0)
+    );
   }, 0);
 
   // ----------------------------end of total stockout----------------------------------------
@@ -1350,7 +1342,6 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const getreturn_Products = async () => {
       try {
-
         if (!user?.email) {
           return;
         }
@@ -1364,25 +1355,194 @@ export const ApiProvider = ({ children }) => {
         const result = await response.json();
         setGetReturnProducts(result);
       } catch (error) {
+        // Handle errors if needed
       }
     };
 
-    getreturn_Products();
+    getreturn_Products(); // Fetch data initially
 
-    const interval = setInterval(() => {
-      getreturn_Products();
-    }, 1000);
+    const interval = setInterval(getreturn_Products, 5000); // Fetch data every 5 seconds
 
-    return () => clearInterval(interval);
-  }, [GetReturnProducts]);
+    return () => clearInterval(interval); // Cleanup function to clear the interval when the component is unmounted
+  }, []);
+
+
+  // ------------------------get New products-------------------------
+
+  const PostNewHandleAddProduct = (e) => {
+    e.preventDefault();
+    const code = e.target.code.value;
+    const productname = e.target.productname.value;
+    const watt = e.target.watt.value;
+    const PurchasePrice = e.target.PurchasePrice.value;
+    const companyName = e.target.companyName.value;
+    const quantity = parseInt(e.target.quantity.value);
+    const amount = quantity * PurchasePrice;
+    const uniqueId = uuidv4();
+    const NewProductData = {
+      id: uniqueId,
+      code,
+      amount,
+      productname,
+      companyName,
+      watt,
+      PurchasePrice,
+      quantity
+    };
+
+    // update Product start
+    const totalProduct = {
+      productname,
+      watt,
+      quantity,
+      companyName,
+      email: user?.email,
+    }
+
+    setLoading(true);
+
+    fetch(`http://localhost:5000/getTotalProduct/${user?.email}`, {
+      method: "GET",
+      headers: {
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
+      }
+    })
+      .then(res => res.json())
+      .then(results => {
+        if (results.length === 0) {
+
+          fetch("http://localhost:5000/totalProduct", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(totalProduct)
+          })
+            .then(res => res.json())
+            .then(createdResult => {
+              window.alert("Success")
+              // Handle the result of the creation, if needed
+            })
+            .catch(error => {
+              // Handle any error during the creation process
+            });
+        }
+        else {
+          const foundItem = results.find((item) =>
+            item?.productname === productname &&
+            item?.watt === watt &&
+            item?.companyname === companyName.toLowerCase()
+          );
+
+          if (foundItem) {
+
+            const newQuantity = { quantity: quantity + (foundItem?.quantity || 0) };
+            // Update the quantity using the API endpoint
+            fetch(`http://localhost:5000/UpdateProductQuantity/${foundItem._id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(newQuantity)
+            })
+              .then(res => res.json())
+              .then(updatedResult => {
+                // Check if there's any existing data in local storage
+                let existingProducts = localStorage.getItem("newProducts");
+                if (existingProducts) {
+                  // If data exists, parse it from JSON to an array
+                  existingProducts = JSON.parse(existingProducts);
+                } else {
+                  // If no data exists, create an empty array
+                  existingProducts = [];
+                }
+
+                // Append the new product to the existing array
+                existingProducts.push(NewProductData);
+
+                // Save the updated array back to local storage
+                localStorage.setItem("newProducts", JSON.stringify(existingProducts));
+                // Handle the result of the update, if needed
+              });
+          } else {
+
+            // Create a new totalProduct using the API endpoint
+            fetch("http://localhost:5000/totalProduct", {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(totalProduct)
+            })
+              .then(res => res.json())
+              .then(createdResult => {
+                // Check if there's any existing data in local storage
+                let existingProducts = localStorage.getItem("newProducts");
+                if (existingProducts) {
+                  // If data exists, parse it from JSON to an array
+                  existingProducts = JSON.parse(existingProducts);
+                } else {
+                  // If no data exists, create an empty array
+                  existingProducts = [];
+                }
+
+                // Append the new product to the existing array
+                existingProducts.push(NewProductData);
+
+                // Save the updated array back to local storage
+                localStorage.setItem("newProducts", JSON.stringify(existingProducts));
+                // Handle the result of the creation, if needed
+              })
+              .catch(error => {
+                // Handle any error during the creation process
+              });
+          }
+        }
+      });
+    // update Product stop
+  };
+
+  const handleCompanyBillMemo = (e, products, totalAmount, email) => {
+    e.preventDefault();
+    const shopname = e.target.shopname.value;
+    const advance = parseInt(e.target.advance.value);
+    const month = `${now.getFullYear()}-${now.getMonth() + 1}`;
+    if (totalAmount >= advance) {
+      const remaining = totalAmount - advance;
+      const newProducts = { shopname, advance, totalAmount, remaining, email, month };
+      const getProducts = { ...newProducts, products };
+      setLoading(true);
+
+      fetch("http://localhost:5000/AddCompanyProducts", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(getProducts),
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          setLoading(false);
+          window.alert("Products Added");
+          localStorage.removeItem('products');
+        })
+        .catch((error) => {
+          setLoading(false);
+          window.alert("An error occurred while adding products");
+        });
+    } else {
+      window.alert("Advance more than the total");
+    }
+  };
+
 
 
 
   return (
     <ApiContext.Provider value={{
+      handleCompanyBillMemo,
       bill,
       data,
-      // googleSign,
       selectedProduct,
       formData,
       shopBillbyDate,
@@ -1413,6 +1573,7 @@ export const ApiProvider = ({ children }) => {
       loading,
       totalPurchasePrice,
       totalSell,
+      PostNewHandleAddProduct,
       handleGetProduct,
       handleProductDelete,
       ReturnProducts,
@@ -1422,7 +1583,6 @@ export const ApiProvider = ({ children }) => {
       handleBillcreating,
       setShop,
       handleshopDelete,
-
       customarbills,
       handle_comapany_bill_pay,
       getBillByID,

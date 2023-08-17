@@ -28,6 +28,7 @@ import StockIn from './Stock/StockIn'
 import AllShop from './Employ Management/AllShop'
 import ShowShopDetails from './Employ Management/ShowShopDetails'
 import ReturnProducts from './ReturnProduct/ReturnProducts'
+import NewAddProduct from './pages/Product_management/NewAddProduct'
 
 const App = () => {
   const [loading, setLoading] = useState(true)
@@ -54,6 +55,7 @@ const App = () => {
             <Route path='/calendar' element={<PrivateRoute><Calendar /></PrivateRoute>} />
             <Route path='/profile' element={<PrivateRoute> <Profile /></PrivateRoute>} />
             <Route path='/addcompany' element={<PrivateRoute><AddCompany /></PrivateRoute>} />
+            <Route path='/newProduct' element={<PrivateRoute><NewAddProduct /></PrivateRoute>} />
             <Route path='/returnProduct' element={<PrivateRoute><ReturnProduct /></PrivateRoute>} />
             <Route path='/ReturnProducts' element={<PrivateRoute><ReturnProducts /></PrivateRoute>} />
             <Route path='/addemploy' element={<PrivateRoute><AddEmploy /></PrivateRoute>} />

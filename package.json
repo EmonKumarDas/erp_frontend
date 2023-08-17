@@ -26,7 +26,8 @@
     "react-router-dom": "^6.10.0",
     "react-to-print": "^2.14.12",
     "react-toastify": "^9.1.2",
-    "sort-by": "^1.2.0"
+    "sort-by": "^1.2.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.27",
