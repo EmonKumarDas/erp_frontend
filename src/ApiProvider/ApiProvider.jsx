@@ -1,11 +1,12 @@
 import { useContext } from 'react';
 import { createContext, useState, useEffect } from 'react';
 import { userContext } from '../pages/Authentication/AuthProvider';
+import 'react-toastify/dist/ReactToastify.css';
 import { toast } from 'react-toastify';
 import useToken from '../hooks/UseToken';
 import { v4 as uuidv4 } from 'uuid';
+import { sliceDate } from './Functions';
 export const ApiContext = createContext();
-
 export const ApiProvider = ({ children }) => {
   const { user } = useContext(userContext)
   const [data, setData] = useState([]);
@@ -14,13 +15,61 @@ export const ApiProvider = ({ children }) => {
   const [getSelectedDate, setSelected_Date] = useState("");
   const [email, setEmail] = useState('');
   const [token] = useToken(email);
+  const [shop, setShop] = useState([]);
+  const [getDate, setGetDate] = useState("")
+  const get_Date = getSelectedDate ? formatDate(getSelectedDate) : "";
+
   if (token) {
     window.location.href = '/'
   }
+  function truncateDate(dateString) {
+    const parts = dateString.split('-'); // Split the string at the hyphen
+    if (parts.length >= 2) {
+      // Join the first two elements with a hyphen
+      return parts.slice(0, 2).join('-');
+    } else {
+      // Invalid date format, return the original string
+      return dateString;
+    }
+  }
+  const [scode, Setscode] = useState("false");
+  const storedSearchValue = localStorage.getItem('searchValue');
 
-  // const userEmail = user?.email;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/getCodeCollection", {
+          method: 'GET',
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
+        const result = await response.json();
 
+        if (result[0] && result[0].code === storedSearchValue) {
+          Setscode("true");
+        } else {
+          Setscode("false");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // You might want to handle the error in some way, e.g., setting an error state.
+      }
+    };
+
+    // Fetch data initially when the component mounts
+    fetchData();
+
+    // Set up an interval to fetch data every 5 seconds
+    const intervalId = setInterval(fetchData, 1000);
+
+    // Cleanup the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [storedSearchValue]);
   // ----------------------------+++++++++++start++++++++++++++---------------------------------------------
 
   function formatDate(date) {
@@ -35,41 +84,36 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (!user?.email) {
-          // Do not proceed with the API request if the email is not available
-          return;
-        }
-
-        const response = await fetch(`http://localhost:5000/getProducts/${user?.email}`, {
+        const response = await fetch(`http://localhost:5000/getProducts`, {
           method: 'GET',
           headers: {
-            authorization: `bearer ${localStorage.getItem('accessToken')}`
-          }
+            authorization: `bearer ${localStorage.getItem('accessToken')}`,
+          },
         });
         const result = await response.json();
 
-        if (Array.isArray(result)) { // Check if result is an array
+        if (Array.isArray(result)) {
           setData(result);
+          setLoading(false);
         } else {
-          setData([]); // Set data to an empty array if result is not an array
+          // Handle the case where the result is not an array
         }
-
       } catch (error) {
-
+        // Handle fetch errors
       }
     };
 
+    // Fetch data initially
     fetchData();
 
-    const interval = setInterval(fetchData, 5000);
+    // Set up an interval to fetch data every 1 second
+    const intervalId = setInterval(fetchData, 1000);
 
+    // Clean up the interval when the component unmounts
     return () => {
-      clearInterval(interval);
+      clearInterval(intervalId);
     };
-  }, [user?.email]);
-
-
-
+  }, []);
   // ------------------------------end of get Product----------------------------------------
 
   const handleCompany = (e) => {
@@ -88,13 +132,14 @@ export const ApiProvider = ({ children }) => {
     fetch("http://localhost:5000/addcompany", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify(company)
     }).then(res => res.json()).then(result => {
       e.target.reset();
       setLoading(false)
-      window.alert("Success")
+      toast("company added")
     })
 
   }
@@ -129,13 +174,14 @@ export const ApiProvider = ({ children }) => {
     fetch("http://localhost:5000/PostReturnProduct", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify(returnProductPost)
     }).then(res => res.json()).then(result => {
       e.target.reset();
       setLoading(false)
-      window.alert("Success")
+      toast("Added return product")
     })
   }
   //-------------------------------end of return product post fucntionality---------------
@@ -155,19 +201,21 @@ export const ApiProvider = ({ children }) => {
     fetch("http://localhost:5000/addshop", {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify(shop)
     }).then(res => res.json()).then(result => {
       e.target.reset();
-      setLoading(false)
-      window.alert("Success")
+
+      setLoading(false);
+      toast("shop added")
     })
 
   }
 
   // ------------------------------end of Add shop----------------------------------------
-  const [shop, setShop] = useState([]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -180,49 +228,67 @@ export const ApiProvider = ({ children }) => {
         });
         const result = await response.json();
         setShop(result);
-      } catch (error) {
-        console.error(error);
+      }
+      catch (error) {
+        // Handle errors
       }
     };
 
-    fetchData(); // Fetch data immediately on mount
+    fetchData();
 
-    const interval = setInterval(fetchData, 5000); // Fetch data every 5 seconds
+    const interval = setInterval(fetchData, 1000);
 
     return () => clearInterval(interval);
   }, []);
+
 
 
   // ------------------------------end of get shop----------------------------------------
   const [allcompany, setAllcompany] = useState([]);
 
   useEffect(() => {
-    setLoading(true);
-    try {
-      if (!user?.email && !token) {
-        return;
-      }
-      fetch(`http://localhost:5000/getCompany/${user?.email}`, {
-        method: "GET",
-        headers: {
-          authorization: `bearer ${localStorage.getItem('accessToken')}`
+    const fetchCompanyData = async () => {
+      try {
+        if (!user?.email && !token) {
+          return;
         }
-      }).then(res => res.json()).then(result => {
-        setAllcompany(result)
-        setLoading(false)
-      })
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  }, [user?.email])
+        const response = await fetch(`http://localhost:5000/getCompany/${user?.email}`, {
+          method: "GET",
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+        const result = await response.json();
+        setAllcompany(result);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+      }
+    };
+
+    const fetchCompanyDataWithInterval = () => {
+      // Fetch initially and then every 5 seconds
+      fetchCompanyData();
+
+      // Set up an interval to fetch data every 5 seconds (5000 milliseconds)
+      const intervalId = setInterval(() => {
+        fetchCompanyData();
+      }, 5000);
+
+      // Clean up the interval when the component unmounts
+      return () => clearInterval(intervalId);
+    };
+
+    fetchCompanyDataWithInterval();
+  }, [user?.email]);
+
+
 
 
   // ------------------------------end of get company----------------------------------------
 
-
-
   const handleProductDelete = (id) => {
+
     setLoading(true);
     fetch(`http://localhost:5000/deleteProduct/${id}`, {
       method: 'DELETE'
@@ -310,10 +376,11 @@ export const ApiProvider = ({ children }) => {
           })
             .then(res => res.json())
             .then(createdResult => {
-              window.alert("Success")
+              toast("success")
               // Handle the result of the creation, if needed
             })
             .catch(error => {
+              toast("faild")
               // Handle any error during the creation process
             });
         }
@@ -337,6 +404,7 @@ export const ApiProvider = ({ children }) => {
             })
               .then(res => res.json())
               .then(updatedResult => {
+                // toast("successfuly updated")
                 // Handle the result of the update, if needed
               });
           } else {
@@ -409,84 +477,7 @@ export const ApiProvider = ({ children }) => {
   // --------------end of id based Product collection-------------------------
 
 
-  // const handleBillcreating = async (e) => {
-  //   e.preventDefault();
 
-  //   // const barcode = e.target.code.value;
-  //   const productname = e.target.productname.value;
-  //   const PurchasePrice = e.target.PurchasePrice.value;
-  //   const Discount = e.target.Discount.value;
-  //   const quantity = e.target.quantity.value;
-  //   const company = e.target.company.value;
-  //   const watt = e.target.watt.value;
-  //   const TotalPrice = PurchasePrice * quantity;
-  //   const DiscountAmount = (Discount / 100) * TotalPrice
-  //   const SellPrice = TotalPrice - DiscountAmount
-  //   const total = SellPrice;
-
-  //   setLoading(true);
-  //   await fetch(`http://localhost:5000/getProductsByProductNameAndWatt/${productname}/${watt}`, {
-  //     method: 'GET',
-  //     headers: {
-  //       authorization: `bearer ${localStorage.getItem('accessToken')}`
-  //     }
-  //   })
-  //     .then(res => res.json())
-  //     .then(result => {
-
-  //       const newBillData = {
-  //         email: user?.email,
-  //         productname,
-  //         PurchasePrice,
-  //         Discount,
-  //         quantity,
-  //         company,
-  //         watt,
-  //         TotalPrice,
-  //         DiscountAmount,
-  //         SellPrice,
-  //         total
-  //       };
-  //       fetch(`http://localhost:5000/getProductsByPnameComNameWatt/${productname.toLowerCase()}/${watt.toLowerCase()}/${company.toLowerCase()}`, {
-  //         method: 'GET',
-  //         headers: {
-  //           authorization: `bearer ${localStorage.getItem('accessToken')}`
-  //         }
-  //       })
-  //         .then(res => res.json())
-  //         .then(data => {
-  //           if (data[0]?.quantity >= quantity) {
-  //             const existingData = JSON.parse(localStorage.getItem('billData')) || [];
-
-  //             const updatedData = [...existingData, newBillData];
-
-  //             localStorage.setItem('billData', JSON.stringify(updatedData));
-
-  //             const existedQuantity = (data[0].quantity || 0) - quantity;
-  //             fetch(`http://localhost:5000/UpdateProductQuantity/${data[0]._id}`, {
-  //               method: 'PUT',
-  //               headers: {
-  //                 'Content-Type': 'application/json'
-  //               },
-  //               body: JSON.stringify({
-  //                 quantity: existedQuantity
-  //               })
-  //             })
-  //               .then(response => response.json())
-  //               .then(data => {
-  //                 window.alert("Success")
-  //                 setLoading(false)
-  //               })
-  //               .catch(error => {
-  //                 console.error(error);
-  //               });
-  //           }
-  //           else {
-  //             toast("you don't have much Product")
-  //           }
-  //         })
-  //     });
-  // };
 
   const handleBillcreating = async (e) => {
     e.preventDefault();
@@ -557,7 +548,8 @@ export const ApiProvider = ({ children }) => {
         const updatedProduct = await response3.json();
 
         if (updatedProduct) {
-          window.alert("Success");
+          e.target.PurchasePrice.value = "";
+          toast("product updated")
           setLoading(false);
         } else {
           toast("Failed to update product quantity");
@@ -567,71 +559,30 @@ export const ApiProvider = ({ children }) => {
       }
     } catch (error) {
       console.error(error);
-      toast("An error occurred while processing the request");
+      toast("Try Again");
       setLoading(false);
     }
   };
 
   // -------------------------end handle bill create---------------------------
 
-  // const handleBillMemo = (e, products, total) => {
-  //   e.preventDefault();
-  //   const name = e.target.name.value;
-  //   const phonenumber = e.target.phonenumber.value;
-  //   const advance = parseInt(e.target.advance.value);
-  //   const get_discount = parseInt(e.target.discount.value);
-  //   const location = e.target.location.value;
-  //   const shopname = e.target.shopname.value;
-  //   const now = new Date();
-  //   const date = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
-  //   const get_products = JSON.parse(localStorage.getItem('billData'));
-  //   const get_total = get_products?.reduce((acc, product) => acc + product.total, 0);
-  //   const discountedTotal = get_total - (get_total * get_discount / 100);
-  //   const userData = {
-  //     email: user?.email, name, location, phonenumber, date, advance, shopname, get_discount, discountedTotal, newbalance: parseInt(advance ? discountedTotal - advance : total - 0), total,
-  //   }
-
-  //   const mergedObject = {
-  //     ...userData,
-  //     "products": products
-  //   };
-
-  //   // Convert mergedObject to JSON string
-  //   const mergedObjectString = JSON.stringify(mergedObject);
-
-  //   // Store the mergedObjectString in localStorage
-  //   localStorage.setItem('mergedData', mergedObjectString);
-
-  //   setLoading(true)
-  //   fetch("http://localhost:5000/createBill", {
-  //     method: "POST",
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(mergedObject)
-  //   })
-  //     .then(res => res.json())
-  //     .then(result => {
-  //       setLoading(false)
-  //       window.location.replace('/printinstant')
-  //     })
-  //     .catch(error => {
-  //       setLoading(false)
-  //     });
-  // }
   const handleBillMemo = async (e, products, total) => {
     e.preventDefault();
     const name = e.target.name.value;
     const phonenumber = e.target.phonenumber.value;
+    const date = e.target.date.value;
     const advance = parseInt(e.target.advance.value);
     const get_discount = parseInt(e.target.discount.value);
     const location = e.target.location.value;
     const shopname = e.target.shopname.value;
-    const now = new Date();
-    const date = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}`;
+    const month = truncateDate(date)
+    const year = sliceDate(date)
     const get_products = JSON.parse(localStorage.getItem('billData'));
     const get_total = get_products?.reduce((acc, product) => acc + product.total, 0);
     const discountedTotal = get_total - (get_total * get_discount / 100);
+    const get_advance_by_date = { advance, month, date, year }
+    const pay_advance_by_date = [get_advance_by_date]
+
     const userData = {
       email: user?.email,
       name,
@@ -640,6 +591,7 @@ export const ApiProvider = ({ children }) => {
       date,
       advance,
       shopname,
+      month,
       get_discount,
       discountedTotal,
       newbalance: parseInt(advance ? discountedTotal - advance : total - 0),
@@ -647,6 +599,7 @@ export const ApiProvider = ({ children }) => {
     };
 
     const mergedObject = {
+      pay_advance_by_date,
       ...userData,
       products,
     };
@@ -664,14 +617,15 @@ export const ApiProvider = ({ children }) => {
       const response = await fetch("http://localhost:5000/createBill", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          authorization: `bearer ${localStorage.getItem('accessToken')}`
         },
         body: mergedObjectString,
       });
 
       const result = await response.json();
 
-      if (result.success) {
+      if (result.acknowledged === true) {
         setLoading(false);
         window.location.replace('/printinstant');
       } else {
@@ -798,7 +752,9 @@ export const ApiProvider = ({ children }) => {
           fetch("http://localhost:5000/addUser", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              authorization: `bearer ${localStorage.getItem('accessToken')}`
+
             },
             body: JSON.stringify(userInfo)
           })
@@ -828,14 +784,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
-        if (!user?.email) {
-          return;
-        }
-
         const response = await fetch(`http://localhost:5000/getBill/${user?.email}`,
-          // const response = await fetch(`http://localhost:5000/getbillbydate/${user?.email}/${getSelectedDate !== "" ? formatDate(getSelectedDate) : formatDate(month)}`,
-
           {
             method: 'GET',
             headers: {
@@ -847,15 +796,13 @@ export const ApiProvider = ({ children }) => {
         SetBills(result);
 
       } catch (error) {
-        // Handle error if necessary
+
       }
     };
 
-    fetchData(); // Initial fetch
-    setLoading(false); // Set loading to false after the initial fetch
-
-    const interval = setInterval(fetchData, 5000); // Fetch data every second
-
+    fetchData();
+    setLoading(false);
+    const interval = setInterval(fetchData, 5000);
     return () => {
       clearInterval(interval);
     };
@@ -864,15 +811,15 @@ export const ApiProvider = ({ children }) => {
   // --------------------------------get created bills data----------------------------------
 
   const getBillByID = (id) => {
-    return fetch(`http://localhost:5000/getbills/${id}`, {
-      method: "GET",
-      headers: {
-        authorization: `bearer ${localStorage.getItem('accessToken')}`
+    return fetch(`http://localhost:5000/getbills/${id}`,
+      {
+        method: 'GET',
+        headers: {
+          authorization: `bearer ${localStorage.getItem('accessToken')}`
+        }
       }
-
-    })
+    )
       .then(response => {
-
         return response.json();
       })
       .then(res => res);
@@ -959,15 +906,18 @@ export const ApiProvider = ({ children }) => {
     const otherbill = parseInt(e.target.otherbill.value);
     const date = e.target.date.value;
     const month = date.slice(0, 7);
+    const year = sliceDate(date);
 
     const paybill = {
-      name, number, pay, otherbill, month, date, email: user?.email
+      name, number, pay, otherbill, month, year, date, email: user?.email
     }
+
     setLoading(true);
     fetch("http://localhost:5000/paybill", {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify(paybill)
     }).then(res => res.json()).then(result => {
@@ -987,9 +937,9 @@ export const ApiProvider = ({ children }) => {
     const tax = parseInt(e.target.tax.value);
     const date = e.target.date.value;
     const month = date.slice(0, 7);
-
+    const year = sliceDate(month)
     const paybill = {
-      email: user?.email, productId: _id, shopname, location, pay, tax: !tax ? 0 : tax, date, month, electricity, total: pay + tax + electricity
+      email: user?.email, productId: _id, shopname, location, pay, tax: !tax ? 0 : tax, date, month, year, electricity, total: pay + tax + electricity
     }
 
     setLoading(true);
@@ -997,11 +947,13 @@ export const ApiProvider = ({ children }) => {
       method: "POST",
       headers: {
         "content-type": "application/json",
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
       },
       body: JSON.stringify(paybill)
     }).then(res => res.json()).then(result => {
       setLoading(false)
       setIsModalOpen(false)
+      toast("Pay shop model")
     })
   }
 
@@ -1009,6 +961,9 @@ export const ApiProvider = ({ children }) => {
   const handle_comapany_bill_pay = (e, product_id) => {
     e.preventDefault();
     const get_advance = parseInt(e.target.advance.value);
+    const get_date = e.target.date.value;
+    const month = get_date.slice(0, 7);
+    const year = get_date.split("-")[0];
     setLoading(true);
     fetch(`http://localhost:5000/getProductById/${product_id}`, {
       method: 'GET',
@@ -1017,10 +972,18 @@ export const ApiProvider = ({ children }) => {
       }
     }).then(res => res.json()).then(product => {
       const advance = (product?.advance || 0) + get_advance;
-      const billData = {
-        email: user?.email,
-        advance
+      const getPayamaount = product.payamount;
+
+      const getUpdateValue = {
+        month, advance: get_advance, get_date, year
       }
+
+      const updatePayamount = [...getPayamaount, getUpdateValue]
+
+      const billData = {
+        advance, updatePayamount
+      }
+
       fetch(`http://localhost:5000/Upadate_Product_Remaining_Balance/${product_id}`, {
         method: "PUT",
         headers: {
@@ -1036,7 +999,38 @@ export const ApiProvider = ({ children }) => {
 
   // -------------------------------------handle comapany bill pay---------------------------------------
 
-  function getMonthName(number) {
+  function getMonthName(monthName) {
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+
+    // Find the index of the input monthName in the array
+    const index = months.indexOf(monthName);
+
+    // Checking if the input monthName is valid
+    if (index !== -1) {
+      // Adding 1 to the index to get the month number (1-based)
+      const monthNumber = index + 1;
+      // Convert the month number to a string with leading zeros for months 1 to 9
+      return monthNumber < 10 ? `0${monthNumber}` : `${monthNumber}`;
+    } else {
+      return '0'; // Return '0' for invalid month names
+    }
+  }
+
+  // Example usage:
+  const monthName = 'March';
+  const monthNumber = getMonthName(monthName);
+
+  if (typeof monthNumber === 'string') {
+    // Output: '03' (for March)
+  } else {
+
+  }
+
+
+  function getMonthNameToConvert(number) {
     const months = [
       'January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'
@@ -1060,31 +1054,46 @@ export const ApiProvider = ({ children }) => {
     const advance = parseInt(e.target.advance.value);
     const newbalance = customarbill?.newbalance - advance;
     const totalpay = customarbill?.advance + advance;
-
+    const date = e.target.date.value;
+    const month = date.slice(0, 7);
+    const year = sliceDate(date)
     const paybill = { advance: totalpay, newbalance };
 
     setLoading(true);
-    fetch(`http://localhost:5000/UpdateProductbill/${customarbill?._id}`, {
-      method: "PUT",
+    fetch(`http://localhost:5000/getbills/${customarbill?._id}`, {
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(paybill),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error("Error updating paybill.");
-        }
-        return res.json();
-      })
-      .then((result) => {
-        setLoading(false);
-        setIsModalOpen(false);
-      })
-      .catch((error) => {
+        authorization: `bearer ${localStorage.getItem('accessToken')}`
+      }
+    }).then(res => res.json()).then(result => {
+      const get_advance_by_date = result?.pay_advance_by_date;
+      const get_current_data = { advance, month, date, year }
+      const get_update_date = [...get_advance_by_date, get_current_data]
 
-        //setLoading(false);
-      });
+      fetch(`http://localhost:5000/UpdateProductbill/${customarbill?._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ advance: totalpay, newbalance, get_update_date }),
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Error updating paybill.");
+          }
+          return res.json();
+        })
+        .then((result) => {
+          setLoading(false);
+
+          setIsModalOpen(false);
+          toast("updated")
+        })
+        .catch((error) => {
+
+          //setLoading(false);
+        });
+    })
   };
 
   // -------------------------------------update customar bill---------------------------------------
@@ -1093,95 +1102,105 @@ export const ApiProvider = ({ children }) => {
   const [getTotalRevenueByDate, setGetTotalRevenueByDate] = useState([]);
   const now = new Date();
   const month = `${now.getFullYear()}-${now.getMonth() + 1}`;
+
   useEffect(() => {
-    try {
-      // if (!user?.email) {
-      //   return;
-      // }
-      fetch(`http://localhost:5000/getBillByDate/${user?.email}/${getSelectedDate !== "" ? getSelectedDate : month}`, {
-        method: 'GET',
-        headers: {
-          authorization: `bearer ${localStorage.getItem('accessToken')}`
-        }
-      })
-
-        .then(res => res.json())
-        .then(result => {
-
-          let totalAdvance = 0;
-          let revenue = 0;
-          for (let i = 0; i < result.length; i++) {
-            totalAdvance += result[i]?.advance;
-            revenue += result[i]?.advance;
-          }
-          setGetTotalRevenueByDate(revenue);
-
-          if (totalAdvance > 1000) {
-
-            const simplifiedTotal = (totalAdvance / 1000);
-            setGetTotalSaleByDate(simplifiedTotal + "k");
-          } else {
-            setGetTotalSaleByDate(totalAdvance + "৳");
-          }
-        });
-    } catch (error) {
-      // Handle the error here
-      console.error("An error occurred:", error);
-    }
-  }, [getSelectedDate])
-
-
-
-
-  // --------------------------------get Total Revenue By Date-------------------------------------
-
-  const [getTotalExpenseByDate, setGetTotalExpenseByDate] = useState([]);
-  const [getTotalExpenseByDateInInteger, setGetTotalExpenseByDateInInteger] = useState([]);
-  useEffect(() => {
-    if (!user?.email) {
-      return;
-    }
-    fetch(`http://localhost:5000/getproductbydate/${getSelectedDate !== "" ? getSelectedDate : month}`, {
-      method: 'GET',
-      headers: {
-        authorization: `bearer ${localStorage.getItem('accessToken')}`
-      }
-    })
-
-      .then(res => res.json())
-      .then(result => {
-        let totalSale = 0;
-        for (let i = 0; i < result.length; i++) {
-          totalSale += result[i]?.purchaseprice;
-        }
-
-        fetch(`http://localhost:5000/getemploypaymentbydate/${getSelectedDate !== "" ? getSelectedDate : month}`, {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/getStoreProductDate/${getDate}`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
           }
-        })
+        });
 
-          .then(res => res.json())
-          .then(data => {
-            let totalPayment = 0;
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
 
-            for (let i = 0; i < data.length; i++) {
-              totalPayment += data[i]?.pay;
+        const result = await response.json();
+        const getRevenue = scode === "false" ? result.totalAdvance / 2 : result.totalAdvance;
+        setGetTotalRevenueByDate(getRevenue);
+        setLoading(false);
+      }
+      catch (error) {
+        // Handle the error here
+        console.error("An error occurred:", error);
+      }
+
+    };
+
+    fetchData(); // Fetch data immediately on mount
+
+    // Set up an interval to fetch data every 5 seconds (5000 milliseconds)
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+
+  }, [getSelectedDate, getDate, user]);
+
+
+  // --------------------------------get Total Revenue By Date-------------------------------------
+
+  const [getTotalExpenseByDate, setGetTotalExpenseByDate] = useState();
+  const [getTotalExpenseByDateInInteger, setGetTotalExpenseByDateInInteger] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productResponse, employeePaymentResponse] = await Promise.all([
+          fetch(`http://localhost:5000/getProductsByDate/${getDate}`, {
+            method: 'GET',
+            headers: {
+              authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
-
-            totalSale += totalPayment;
-            setGetTotalExpenseByDateInInteger(totalSale)
-            if (totalSale > 1000) {
-              const simplifiedTotal = (totalSale / 1000).toFixed(1);
-              setGetTotalExpenseByDate(simplifiedTotal + "k");
-            } else {
-              setGetTotalExpenseByDate(totalSale);
+          }),
+          fetch(`http://localhost:5000/getemploypaymentbydate/${getDate}`, {
+            method: 'GET',
+            headers: {
+              authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
-          });
-      });
-  }, [getTotalExpenseByDate,
-    getTotalExpenseByDateInInteger])
+          })
+        ]);
+
+        const [productData, employeePaymentData] = await Promise.all([productResponse.json(), employeePaymentResponse.json()]);
+        const employPayment = employeePaymentData.transactions;
+
+        let totalPayment = 0;
+
+        for (let i = 0; i < employPayment.length; i++) {
+          totalPayment += employPayment[i]?.pay + employPayment[i]?.otherbill;
+
+        }
+        fetch(`http://localhost:5000/getStoreProductDate/${getDate}`, {
+          method: 'GET',
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
+        }).then(res => res.json()).then(result => {
+          const getOriginalPrice = result?.getOriginalPrice ? result.getOriginalPrice : 0;
+          const productsbuy = productData.totalAdvance;
+          const totalExpence = totalPayment + productsbuy + getOriginalPrice;
+          const getExpence = scode === "false" ? totalExpence / 2 : totalExpence;
+          setGetTotalExpenseByDateInInteger(totalExpence);
+          setGetTotalExpenseByDate(getExpence);
+        }
+        )
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData(); // Fetch data immediately on mount
+
+    // Set up an interval to fetch data every 5 seconds (5000 milliseconds)
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+
+  }, [getSelectedDate, get_Date, getDate, user]);
+
+
 
 
 
@@ -1189,36 +1208,47 @@ export const ApiProvider = ({ children }) => {
 
   // --------------------------------get Total expense By Date-------------------------------------
 
-  const [getTotalProductByDate, setGetTotalProductByDate] = useState([]);
-  useEffect(() => {
+  const [getTotalProductByDate, setGetTotalProductByDate] = useState();
+
+useEffect(() => {
+  // This inner useEffect watches the getDate variable
+  const fetchData = async () => {
     try {
-      if (!user?.email) {
-        return;
-      }
-      fetch(`http://localhost:5000/getproductbydate/${getSelectedDate !== "" ? getSelectedDate : month}`, {
+      const response = await fetch(`http://localhost:5000/getShopPaymentByDate/${user?.email}/${getDate}`, {
         method: 'GET',
         headers: {
           authorization: `bearer ${localStorage.getItem('accessToken')}`
         }
-      })
-        .then(res => res.json())
-        .then(result => {
-          let totalAdvance = 0;
-          for (let i = 0; i < result.length; i++) {
-            totalAdvance += result[i].purchaseprice;
-          }
-          if (totalAdvance > 1000) {
-            const simplifiedTotal = Math.floor(totalAdvance / 1000);
-            setGetTotalProductByDate(simplifiedTotal + "k");
-          } else {
-            setGetTotalProductByDate(totalAdvance + "৳");
-          }
-        });
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const result = await response.json();
+
+      if (result.length !== 0) {
+        let shopPayment = 0;
+        for (let i = 0; i < result.length; i++) {
+          shopPayment += result[i].total;
+        }
+        const getExpence = scode === "false" ? shopPayment / 2 : shopPayment;
+        setGetTotalProductByDate(getExpence);
+      } else {
+        setGetTotalProductByDate(0);
+      }
     } catch (error) {
       // Handle the error here
       console.error("An error occurred:", error);
     }
-  }, [getTotalProductByDate])
+  };
+
+  if (getDate) {
+    fetchData(); // Only execute fetchData if getDate is truthy (loaded)
+  }
+}, [getSelectedDate, user, getDate]);
+
+
 
 
   // --------------------------------get Total Product purchase price By Date-------------------------------------
@@ -1244,11 +1274,17 @@ export const ApiProvider = ({ children }) => {
 
     fetchTotalProduct(); // Fetch data immediately on mount
 
-    // No need for an interval if you want to fetch data only once
+    // Set up an interval to fetch data every 5 seconds (5000 milliseconds)
+    const intervalId = setInterval(fetchTotalProduct, 5000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
 
   }, [user?.email]);
 
+
   // *******************end of get total product******************************************
+
   const [ReturnProducts, setReturnProducts] = useState([]);
   useEffect(() => {
     const fetchReturnProducts = async () => {
@@ -1278,39 +1314,12 @@ export const ApiProvider = ({ children }) => {
 
   // *******************end of get total product******************************************
 
-  const [shopBillbyDate, setShopBillbyDate] = useState([]);
-  useEffect(() => {
-    const getshopbill = async () => {
-      try {
-        const response = await fetch(`http://localhost:5000/getShopPaymentByDate/${user?.email}/${getSelectedDate !== "" ? formatDate(getSelectedDate) : formatDate(month)}`, {
-          method: 'GET',
-          headers: {
-            authorization: `bearer ${localStorage.getItem('accessToken')}`
-          }
-        });
-        const result = await response.json();
-        setShopBillbyDate(result);
-      } catch (error) {
-        // Handle errors if needed
-      }
-    };
-
-    getshopbill(); // Fetch data initially
-
-    const interval = setInterval(() => {
-      getshopbill(); // Fetch data whenever getSelectedDate or month changes
-    }, 5000); // Fetch data every 5 seconds (adjust the interval time as needed)
-
-    return () => {
-      clearInterval(interval); // Clear the interval when the component is unmounted
-    };
-  }, [getSelectedDate, month, user?.email]);
   // --------------------------- get return products -------------------------------
   const [sellOut, setSellOut] = useState([]);
 
   useEffect(() => {
     try {
-      fetch(`http://localhost:5000/getSellByDate/${getSelectedDate !== "" ? getSelectedDate : month}`, {
+      fetch(`http://localhost:5000/getSellByDate/${getDate}`, {
         method: 'GET',
         headers: {
           authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1318,6 +1327,7 @@ export const ApiProvider = ({ children }) => {
       })
         .then((res) => res.json())
         .then((result) => {
+
           setSellOut(result);
         })
         .catch((error) => {
@@ -1326,7 +1336,7 @@ export const ApiProvider = ({ children }) => {
     } catch (error) {
       console.error(error);
     }
-  }, [getSelectedDate, month]);
+  }, [getSelectedDate, month, getDate]);
 
   const StockOut = sellOut?.reduce((acc, curr) => {
     return (
@@ -1379,6 +1389,7 @@ export const ApiProvider = ({ children }) => {
     const quantity = parseInt(e.target.quantity.value);
     const amount = quantity * PurchasePrice;
     const uniqueId = uuidv4();
+
     const NewProductData = {
       id: uniqueId,
       code,
@@ -1410,21 +1421,37 @@ export const ApiProvider = ({ children }) => {
       .then(res => res.json())
       .then(results => {
         if (results.length === 0) {
-
           fetch("http://localhost:5000/totalProduct", {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              authorization: `bearer ${localStorage.getItem('accessToken')}`
             },
             body: JSON.stringify(totalProduct)
           })
             .then(res => res.json())
             .then(createdResult => {
-              window.alert("Success")
+              // Check if there's any existing data in local storage
+              let existingProducts = localStorage.getItem("newProducts");
+              if (existingProducts) {
+                // If data exists, parse it from JSON to an array
+                existingProducts = JSON.parse(existingProducts);
+              } else {
+                // If no data exists, create an empty array
+                existingProducts = [];
+              }
+
+              // Append the new product to the existing array
+              existingProducts.push(NewProductData);
+
+              // Save the updated array back to local storage
+              localStorage.setItem("newProducts", JSON.stringify(existingProducts));
+              // Handle the result of the update, if needed
+              toast("Success")
               // Handle the result of the creation, if needed
             })
             .catch(error => {
-              // Handle any error during the creation process
+              toast("failed")
             });
         }
         else {
@@ -1435,7 +1462,6 @@ export const ApiProvider = ({ children }) => {
           );
 
           if (foundItem) {
-
             const newQuantity = { quantity: quantity + (foundItem?.quantity || 0) };
             // Update the quantity using the API endpoint
             fetch(`http://localhost:5000/UpdateProductQuantity/${foundItem._id}`, {
@@ -1463,14 +1489,17 @@ export const ApiProvider = ({ children }) => {
                 // Save the updated array back to local storage
                 localStorage.setItem("newProducts", JSON.stringify(existingProducts));
                 // Handle the result of the update, if needed
+                e.target.productname.value = "";
               });
-          } else {
+          }
+          else {
 
             // Create a new totalProduct using the API endpoint
             fetch("http://localhost:5000/totalProduct", {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                authorization: `bearer ${localStorage.getItem('accessToken')}`
               },
               body: JSON.stringify(totalProduct)
             })
@@ -1492,6 +1521,7 @@ export const ApiProvider = ({ children }) => {
                 // Save the updated array back to local storage
                 localStorage.setItem("newProducts", JSON.stringify(existingProducts));
                 // Handle the result of the creation, if needed
+                e.target.productname.value = "";
               })
               .catch(error => {
                 // Handle any error during the creation process
@@ -1505,53 +1535,95 @@ export const ApiProvider = ({ children }) => {
   const handleCompanyBillMemo = (e, products, totalAmount, email) => {
     e.preventDefault();
     const shopname = e.target.shopname.value;
+    const get_date = e.target.date.value;
     const advance = parseInt(e.target.advance.value);
-    const month = `${now.getFullYear()}-${now.getMonth() + 1}`;
+    const month = truncateDate(get_date)
     if (totalAmount >= advance) {
       const remaining = totalAmount - advance;
       const newProducts = { shopname, advance, totalAmount, remaining, email, month };
-      const getProducts = { ...newProducts, products };
+      const payamount = [{ month, advance, get_date }]
+      const getProducts = { ...newProducts, products, payamount };
       setLoading(true);
 
       fetch("http://localhost:5000/AddCompanyProducts", {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          authorization: `bearer ${localStorage.getItem('accessToken')}`
         },
         body: JSON.stringify(getProducts),
       })
         .then((res) => res.json())
         .then((result) => {
           setLoading(false);
-          window.alert("Products Added");
-          localStorage.removeItem('products');
+          toast("Products Added");
+          localStorage.removeItem('newProducts');
         })
         .catch((error) => {
           setLoading(false);
-          window.alert("An error occurred while adding products");
+          toast("An error occurred while adding products");
         });
-    } else {
-      window.alert("Advance more than the total");
+    }
+    else {
+      toast("Advance more than the total");
     }
   };
 
+  const handleOtherBill = async (e) => {
+    e.preventDefault();
+    const productname = e.target.productname.value;
+    const PurchasePrice = e.target.PurchasePrice.value;
+    const Discount = e.target.Discount.value;
+    const OriginalPrice = e.target.OriginalPrice.value;
+    const storeProductDate = e.target.date.value;
+    const quantity = e.target.quantity.value;
+    const company = e.target.company.value;
+    const watt = e.target.watt.value;
+    const TotalPrice = PurchasePrice * quantity;
+    const DiscountAmount = (Discount / 100) * TotalPrice;
+    const SellPrice = TotalPrice - DiscountAmount;
+    const total = SellPrice;
 
+    setLoading(true);
 
+    const newBillData = {
+      email: user?.email,
+      productname,
+      storeProductDate,
+      storedateMonth: truncateDate(storeProductDate),
+      originalPrice: OriginalPrice * quantity,
+      PurchasePrice,
+      Discount,
+      quantity,
+      company,
+      watt,
+      TotalPrice,
+      DiscountAmount,
+      SellPrice,
+      total
+    };
+
+    const existingData = JSON.parse(localStorage.getItem('billData')) || [];
+    const updatedData = [...existingData, newBillData];
+    localStorage.setItem('billData', JSON.stringify(updatedData));
+
+  };
 
   return (
     <ApiContext.Provider value={{
       handleCompanyBillMemo,
       bill,
+      scode,
       data,
       selectedProduct,
       formData,
-      shopBillbyDate,
       employees,
       stockIn,
       isModalOpen,
       setIsModalOpen,
       handlePayBill,
       setLoading,
+      handleOtherBill,
       getTotalSaleByDate,
       getTotalProductByDate,
       shop,
@@ -1573,15 +1645,19 @@ export const ApiProvider = ({ children }) => {
       loading,
       totalPurchasePrice,
       totalSell,
+      scode,
       PostNewHandleAddProduct,
       handleGetProduct,
       handleProductDelete,
       ReturnProducts,
       getTotalRevenueByDate,
+      getMonthNameToConvert,
       getTotalExpenseByDateInInteger,
       handleBillMemo,
       handleBillcreating,
       setShop,
+      getDate,
+      setGetDate,
       handleshopDelete,
       customarbills,
       handle_comapany_bill_pay,

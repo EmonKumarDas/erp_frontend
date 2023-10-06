@@ -1,12 +1,9 @@
 import React, { useContext, useState } from 'react'
-
 import DefaultLayout from '../layout/DefaultLayout'
 import { ApiContext } from '../ApiProvider/ApiProvider'
 import Modal from '../Employ Management/Modal'
 import CircleLoader from './CircleLoader'
 import { Link } from 'react-router-dom'
-import { userContext } from '../pages/Authentication/AuthProvider'
-
 
 const ChatCard = () => {
   const { employees, setIsModalOpen, loading } = useContext(ApiContext);
@@ -27,36 +24,36 @@ const ChatCard = () => {
 
         {
           loading ? <CircleLoader></CircleLoader> :
-            employees?.map((employ) => (
-              <div>
-                <a
-
-                  className='flex items-center gap-5 py-3 px-7.5 hover:bg-gray-3 dark:hover:bg-meta-4'
-                >
-
-
-                  <div className='flex flex-1 items-center justify-between'>
-                    <div>
-                      <h5 className='font-medium'>{employ?.name ? employ?.name : employ?.email}</h5>
-                      <p>
-                        <span className='text-sm'>{employ?.number}</span>
-                      </p>
-                    </div>
-                  </div>
-                  {
-                    employ?.email === "em@gmail.com" ?
-                     <button disabled className=' bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>Admin</button>
+          <table className='table-auto w-full border-collapse border border-stroke rounded-sm'>
+            <thead className='bg-meta-4 text-white'>
+              <tr>
+                <th className='px-4 py-2'>Name</th>
+                <th className='px-4 py-2'>Number</th>
+                <th className='px-4 py-2'>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {employees?.map((employ) => (
+                <tr key={employ._id} className='border border-stroke'>
+                  <td className='px-4 py-2'>{employ?.name ? employ?.name : employ?.email}</td>
+                  <td className='px-4 py-2'>{employ?.number}</td>
+                  <td className='px-4 py-2'>
+                    {
+                      employ?.email === "em@gmail.com" ?
+                      <button disabled className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>Admin</button>
                       : <>
                         <button onClick={() => handlePayClick(employ._id)} className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>PAY</button>
 
                         <Link to={`/details/${employ.number}`}>
-                          <button className='bg-meta-6 text-white px-4 py-2 my-2 rounded font-bold'>VIEW</button>
+                          <button className='bg-meta-6 text-white px-4 py-2 my-2 mx-2 rounded font-bold'>VIEW</button>
                         </Link >
                       </>
-                  }
-                </a>
-              </div>
-            ))
+                    }
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         }
         <Modal employData={employData} />
       </div>

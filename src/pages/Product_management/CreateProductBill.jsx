@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { ApiContext } from '../../ApiProvider/ApiProvider';
 import { userContext } from '../Authentication/AuthProvider';
-import { Link } from 'react-router-dom';
 
 function CreateProductBill() {
-    const { shop, loading, handleCompanyBillMemo, allcompany } = useContext(ApiContext);
+    const { shop, loading, handleCompanyBillMemo } = useContext(ApiContext);
     const { user } = useContext(userContext)
     const email = user?.email;
     const products = JSON.parse(localStorage.getItem('newProducts'));
@@ -49,7 +48,17 @@ function CreateProductBill() {
                     </select>
 
                 </div>
-
+                <div>
+                    <label className='mb-3 block text-black dark:text-white'>
+                        Date
+                    </label>
+                    <input
+                        required
+                        name='date'
+                        type='date'
+                        className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                    />
+                </div>
                 <div className="overflow-x-auto">
                     <table className="min-w-full text-xs">
                         <colgroup>
@@ -68,8 +77,8 @@ function CreateProductBill() {
                                 <th className="p-3">Price</th>
                                 <th className="p-3">Watt</th>
                                 <th className="p-3">Taka</th>
-                               
-                              
+
+
                             </tr>
                         </thead>
                         <tbody>
@@ -83,7 +92,7 @@ function CreateProductBill() {
                                     <td className="p-3"><p>{product.PurchasePrice}</p></td>
                                     <td className="p-3"><p>{product.watt}</p></td>
                                     <td className="p-3"><p>{product.quantity * product.PurchasePrice}</p></td>
-                                  
+
                                 </tr>
                             ))}
                         </tbody>
@@ -97,7 +106,7 @@ function CreateProductBill() {
                             <tr>
                                 <td colSpan="5" className="text-right font-bold py-2 px-4">Advance:</td>
                                 <td className="py-2 text-white font-bold">
-                                    <input type="number" name='advance' className="border text-black border-gray-300 p-2 rounded-md w-full" />
+                                    <input type="number" name='advance' defaultValue={0} className="border text-black border-gray-300 p-2 rounded-md w-full" />
                                 </td>
                             </tr>
                         </tfoot>

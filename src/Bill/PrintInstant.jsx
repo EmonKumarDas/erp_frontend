@@ -20,31 +20,32 @@ function PrintInstant() {
     const handleCancel = () => {
         localStorage.removeItem('mergedData');
         localStorage.removeItem('billData');
+        window.location.href = '/';
     }
     useEffect(() => {
         const handleBeforeUnload = () => {
-          // Remove 'mergedData' and 'billData' from localStorage
-          localStorage.removeItem('mergedData');
-          localStorage.removeItem('billData');
+            // Remove 'mergedData' and 'billData' from localStorage
+            localStorage.removeItem('mergedData');
+            localStorage.removeItem('billData');
         };
-    
+
         window.addEventListener('beforeunload', handleBeforeUnload);
-    
+
         return () => {
-          // Clean up the event listener when the component is unmounted
-          window.removeEventListener('beforeunload', handleBeforeUnload);
+            // Clean up the event listener when the component is unmounted
+            window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-      }, []);
+    }, []);
     return (
         <div className="bg-white rounded-lg shadow-lg w-[90vw] m-auto my-5">
             <div ref={componentRef} >
                 <div className="flex justify-between">
                     <div className='p-4'>
-                        <h1 className="text-black-2 text-3xl font-bold mb-2">{bill.shopname}</h1>
-                        <p className="text-black-2 text-sm">All kinds of electric goods whole saler and retailer</p>
+                        <h1 className="text-black-2 text-3xl font-bold mb-2">{bill?.shopname}</h1>
+                        <p className="text-black-2 text-sm">All kinds of electric goods whole saler and retailes</p>
                         <p className="text-black-2 text-sm mt-1">119/24, Foyez Electric Market, Nandankanan, Chittagong</p>
                         <p className="text-black-2 text-sm">Mobile: 01846378948</p>
-                        <p className="text-black-2 text-sm mt-1">Date: {bill.date}</p>
+                        <p className="text-black-2 text-sm mt-1">Date: {bill?.date}</p>
                     </div>
                     <div className=''>
                         <h2 className="text-white px-6 rounded-l-md my-3 bg-graydark text-xl font-bold">Bill</h2>
@@ -54,15 +55,15 @@ function PrintInstant() {
                 <div className="p-4">
                     <div className="flex justify-between items-center">
 
-                        <input type="text" defaultValue={bill.name} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
+                        <input type="text" defaultValue={bill?.name} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
                     </div>
                     <div className="flex justify-between items-center mt-2">
 
-                        <input type="text" defaultValue={bill.phonenumber} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
+                        <input type="text" defaultValue={bill?.phonenumber} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
                     </div>
                     <div className="flex justify-between items-center mt-2">
 
-                        <input type="text" defaultValue={bill.location} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
+                        <input type="text" defaultValue={bill?.location} readOnly className="border border-gray-300 p-2 rounded-md w-full" />
                     </div>
                 </div>
 

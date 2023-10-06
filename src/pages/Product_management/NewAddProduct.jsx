@@ -4,6 +4,7 @@ import DefaultLayout from '../../layout/DefaultLayout';
 import CircleLoader from "../../components/CircleLoader";
 import { ApiContext } from "../../ApiProvider/ApiProvider";
 import CreateProductBill from "./CreateProductBill";
+import { ToastContainer } from "react-toastify";
 
 const NewAddProduct = () => {
     const { PostNewHandleAddProduct, allcompany, loading } = useContext(ApiContext);
@@ -129,6 +130,7 @@ const NewAddProduct = () => {
                     </form>
                 </div>
                 <CreateProductBill></CreateProductBill>
+                <ToastContainer></ToastContainer>
             </div>
         </DefaultLayout>
     );

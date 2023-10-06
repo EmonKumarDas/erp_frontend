@@ -11,15 +11,14 @@ function StockData() {
     companyname: "",
   });
 
-  // Extract unique values for each filter option
-  const uniqueProductNames = Array.from(new Set(stockIn.map((product) => product.productname)));
-  const uniqueWatts = Array.from(new Set(stockIn.map((product) => product.watt)));
-  const uniqueQuantities = Array.from(new Set(stockIn.map((product) => product.quantity)));
-  const uniqueCompanyNames = Array.from(new Set(stockIn.map((product) => product.companyname)));
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5; // Adjust the number of items per page as needed
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    setCurrentPage(1); // Reset to the first page when filters change
   };
 
   // Filter the data based on the selected filter options
@@ -33,6 +32,25 @@ function StockData() {
     );
   });
 
+  // Calculate pagination parameters
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  // Pagination handlers
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   return (
     <div className="overflow-x-auto mt-5">
       <div className="px-4 shadow-2 pb-4 rounded bg-white dark:border-strokedark dark:bg-boxdark">
@@ -40,58 +58,32 @@ function StockData() {
           <h3 className="font-medium text-black dark:text-white">Stock In</h3>
         </div>
         <div className="mt-4 text-black-2 flex space-x-4">
-          <select
+          {/* Filter options */}
+          <input
+            type="text"
             name="productname"
             value={filters.productname}
             onChange={handleFilterChange}
+            placeholder="Product Name"
             className="px-2 py-1 border rounded"
-          >
-            <option value="">Select product name</option>
-            {uniqueProductNames.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
-          <select
+          />
+          <input
+            type="text"
             name="watt"
             value={filters.watt}
             onChange={handleFilterChange}
+            placeholder="Watt"
             className="px-2 py-1 border rounded"
-          >
-            <option value="">Select watt</option>
-            {uniqueWatts.map((watt) => (
-              <option key={watt} value={watt}>
-                {watt}
-              </option>
-            ))}
-          </select>
-          <select
-            name="quantity"
-            value={filters.quantity}
-            onChange={handleFilterChange}
-            className="px-2 py-1 border rounded"
-          >
-            <option value="">Select quantity</option>
-            {uniqueQuantities.map((quantity) => (
-              <option key={quantity} value={quantity}>
-                {quantity}
-              </option>
-            ))}
-          </select>
-          <select
+          />
+         
+          <input
+            type="text"
             name="companyname"
             value={filters.companyname}
             onChange={handleFilterChange}
+            placeholder="Company Name"
             className="px-2 py-1 border rounded"
-          >
-            <option value="">Select company name</option>
-            {uniqueCompanyNames.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </select>
+          />
         </div>
         {loading ? (
           <CircleLoader />
@@ -108,7 +100,7 @@ function StockData() {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((product, index) => (
+                {currentItems.map((product, index) => (
                   <tr
                     key={product?._id}
                     className={index % 2 === 0 ? "bg-gray-100" : "bg-gray-200"}
@@ -124,6 +116,28 @@ function StockData() {
             </table>
           </div>
         )}
+        {/* Pagination */}
+        <div className="mt-4 flex justify-between">
+          <div className="text-sm">
+            Page {currentPage} of {totalPages}
+          </div>
+          <div>
+            <button
+              onClick={prevPage}
+              disabled={currentPage === 1}
+              className="px-2 py-1 bg-danger mx-2 text-white font-bold rounded"
+            >
+              Previous
+            </button>
+            <button
+              onClick={nextPage}
+              disabled={currentPage === totalPages}
+              className="px-2 py-1 bg-primary text-white font-bold mx-2 rounded"
+            >
+              Next
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

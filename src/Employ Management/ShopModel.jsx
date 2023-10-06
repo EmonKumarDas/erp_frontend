@@ -5,9 +5,9 @@ const ShopModel = ({ shops }) => {
     const { isModalOpen, setIsModalOpen, handleshopBill, loading } = useContext(ApiContext);
 
     const handleshopPayBillform = (e) => {
-        handleshopBill(e,shops?._id)
+        handleshopBill(e, shops?._id)
     }
-    
+
     return (
         <div>
             {isModalOpen ? (
@@ -50,6 +50,7 @@ const ShopModel = ({ shops }) => {
                                         required
                                         name='pay'
                                         type='text'
+                                        defaultValue={0}
                                         placeholder='pay'
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                     />
@@ -85,6 +86,7 @@ const ShopModel = ({ shops }) => {
                                         Date
                                     </label>
                                     <input
+                                        required
                                         name='date'
                                         type='date'
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'

@@ -10,6 +10,7 @@ const AddCompany = () => {
     const handleAddComPany = (e) => {
         handleCompany(e);
     }
+    
     return (
         <DefaultLayout>
             <Breadcrumb pageName='Add Company' />

@@ -7,22 +7,14 @@ import StockData from './StockInData';
 import Creditor from './Creditor';
 import MostSell from './MostSells';
 import Credit from './Credit';
+import DateSelector from '../../DateSelector/DateSelector';
 
 const Analytics = () => {
-  const { getTotalRevenueByDate, GetReturnProducts, setSelected_Date, shopBillbyDate, getMonthName, stockIn, getTotalExpenseByDateInInteger, getTotalSaleByDate, StockOut } = useContext(ApiContext);
-  const totalAmountSum = GetReturnProducts.reduce((acc, entry) => acc + entry.TotalAmount, 0);
+  const { loading, getTotalRevenueByDate, getTotalExpenseByDate, getTotalProductByDate, setSelected_Date, getMonthName, stockIn, StockOut } = useContext(ApiContext);
 
-  let totalSum = 0;
-  for (let i = 0; i < shopBillbyDate.length; i++) {
-    const expense = shopBillbyDate[i];
-    if (expense.total !== null && typeof expense.total === 'number') {
-      totalSum += expense.total;
-    }
-  }
+  const getProductsExpense = getTotalProductByDate ? getTotalProductByDate : 0;
+  const total_Expense = getTotalExpenseByDate + getProductsExpense;
 
-  const expense = (totalSum + getTotalExpenseByDateInInteger);
-
-  const netProfit = (getTotalRevenueByDate - expense);
   const totalQuantity = stockIn.reduce((sum, item) => sum + item.quantity, 0);
 
   const now = new Date();
@@ -46,44 +38,37 @@ const Analytics = () => {
     <DefaultLayout>
 
       <div className="my-4">
-        <label htmlFor="datePicker" className="mr-2">Select Date:</label>
-
-        <input
-          type="date"
-          id="datePicker"
-          value={selectedDate}
-          onChange={handleDateChange}
-          className="border border-gray-400 rounded px-2 py-1"
-        />
-        {
-          selectedDate ? <p className='text-start my-5'>{selectedDate.toLocaleString()}</p> : <p className='text-start my-5 text-meta-3 font-bold'> {showDate} </p>
-        }
       </div>
+     
+      <DateSelector></DateSelector>
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5'>
 
         <CardOne
-          title="Revenue"
-          amount={parseInt(getTotalSaleByDate) - parseInt(totalAmountSum)}
-       
+          title="মোট বিক্রি"
+          amount={loading ? "Loading..." : getTotalRevenueByDate ? getTotalRevenueByDate : 0}
         ></CardOne>
 
         <CardOne
-          title="Net Profit"
-          amount={netProfit - totalAmountSum + "৳"}
-        
+          title=" মোট খরচ"
+          amount={loading ? "Loading..." : total_Expense ? total_Expense : 0}
+        ></CardOne>
+
+        <CardOne
+          title="মোট লাভ"
+          amount={getTotalRevenueByDate - total_Expense ? getTotalRevenueByDate - total_Expense : 0 + "৳"}
         ></CardOne>
 
         <Link to="/stockIn">
           <CardOne
             title="Stock In"
             amount={totalQuantity}
-           
+
           ></CardOne>
         </Link>
         <CardOne
           title="Stock Out"
           amount={StockOut}
-          
+
         ></CardOne>
       </div>
 

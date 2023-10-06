@@ -3,13 +3,8 @@ import { ApiContext } from "../ApiProvider/ApiProvider";
 import CircleLoader from "./CircleLoader";
 
 function Table() {
-    const { data, loading, handleProductDelete } = useContext(ApiContext);
+    const { data, loading } = useContext(ApiContext);
 
-    const ClickDelete = (id) => {
-        if (window.confirm('Are you sure you want to delete this product?')) {
-            handleProductDelete(id);
-        }
-    }
     return (
         <div className="overflow-x-auto">
             <div className="px-4 shadow-2 pb-4 rounded bg-white dark:border-strokedark dark:bg-boxdark">

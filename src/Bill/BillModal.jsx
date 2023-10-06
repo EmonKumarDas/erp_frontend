@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
 import { ApiContext } from '../ApiProvider/ApiProvider';
 
-
 const BillModal = ({ customarbill }) => {
     const { isModalOpen, setIsModalOpen, handleUpdatePaybill, loading } = useContext(ApiContext);
 
     const UpdatePaybill = (e) => {
-        handleUpdatePaybill(e,customarbill)
-
+        handleUpdatePaybill(e, customarbill)
     }
+    
     return (
         <div>
             {isModalOpen ? (
@@ -57,7 +56,17 @@ const BillModal = ({ customarbill }) => {
                                         className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
                                     />
                                 </div>
-
+                                <div>
+                                    <label className='mb-3 block text-black dark:text-white'>
+                                        Date
+                                    </label>
+                                    <input
+                                        required
+                                        name='date'
+                                        type='date'
+                                        className='w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary'
+                                    />
+                                </div>
                                 <button
                                     className="bg-primary text-white px-4 py-2 my-2 rounded"
                                 >

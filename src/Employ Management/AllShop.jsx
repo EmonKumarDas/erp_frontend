@@ -65,7 +65,7 @@ function AllShop() {
                                                 </td>
                                             )}
                                             <td onClick={() => handleShopBillPay(product?._id)} className="border hover:bg-black cursor-pointer font-extrabold text-primary px-4 py-2">
-                                                EDIT
+                                                Pay
                                             </td>
 
 

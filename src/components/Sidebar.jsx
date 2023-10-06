@@ -59,7 +59,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
       <div className='flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5'>
         <NavLink to='/'>
           {/* <img src={Logo} alt='Logo' /> */}
-          <h1 className='font-semibold text-2xl text-[white]'>ShahJalal Lighting</h1>
+          <h1 className='text-[white] text-2xl font-bold'>শাহ্জালাল লাইটিং</h1>
         </NavLink>
 
         <button
@@ -725,18 +725,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                               >
                                 <ul className='mt-4 mb-5.5 flex flex-col gap-2.5 pl-6'>
                                 
-
-                                  <li>
-                                    <NavLink
-                                      to='/addproduct'
-                                      className={({ isActive }) =>
-                                        'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
-                                        (isActive && '!text-white')
-                                      }
-                                    >
-                                      Add Product
-                                    </NavLink>
-                                  </li>
                                   <li>
                                     <NavLink
                                       to='/newProduct'
@@ -861,6 +849,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                               }
                             >
                               All Sells
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to='/pos'
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              POS System
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to='/otherSells'
+                              className={({ isActive }) =>
+                                'group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ' +
+                                (isActive && '!text-white')
+                              }
+                            >
+                              Other Sells
                             </NavLink>
                           </li>
                         </ul>
