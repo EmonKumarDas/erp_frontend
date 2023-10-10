@@ -40,16 +40,16 @@ import OtherProductAdd from './pages/Product_management/OtherProductAdd';
 
 const App = () => {
 
-  const handleBlockInspect = (event)=>{
+  const handleBlockInspect = (event) => {
     event.preventDefault();
   }
 
-  // useEffect(()=>{
+  // useEffect(() => {
   //   window.addEventListener('contextmenu', handleBlockInspect);
-  //   return function cleanup(){
+  //   return function cleanup() {
   //     window.removeEventListener('contextmenu', handleBlockInspect);
   //   }
-  // },[]);
+  // }, []);
 
   const [loading, setLoading] = useState(true)
 

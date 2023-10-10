@@ -46,18 +46,18 @@ const Credit = () => {
               <table className="table-auto w-full">
                 <thead>
                   <tr>
-                    <th className="px-4 text-left">#</th>
-                    <th className="px-4 text-left">Shop's Name</th>
-                    <th className="px-4 text-left">Customer's Name</th>
-                    <th className="px-4 text-left">Customer's Number</th>
-                    <th className="px-4 text-left">Quantity</th>
-                    <th className="px-4 text-left">Total</th>
-                    <th className="px-4 text-left">Discount</th>
-                    <th className="px-4 text-left">Advance</th>
-                    <th className="px-4 text-left">Date</th>
-                    <th className="px-4 text-left">Remaining</th>
-                    <th className="px-4 text-left"></th>
-                    <th className="px-4 text-left"></th>
+                    <th className="px-4 border text-left">#</th>
+                    <th className="px-4 border font-bold text-left">Shop's Name</th>
+                    <th className="px-4 border font-bold text-left">Customer's Name</th>
+                    <th className="px-4 border font-bold text-left">Customer's Number</th>
+                    <th className="px-4 border font-bold text-left">Quantity</th>
+                    <th className="px-4 border font-bold text-left">Total</th>
+                    <th className="px-4 border font-bold text-left">Discount</th>
+                    <th className="px-4 border font-bold text-left">Advance</th>
+                    <th className="px-4 border font-bold text-left">Date</th>
+                    <th className="px-4 border font-bold text-left">Remaining</th>
+                    <th className="px-4 border font-bold text-left"></th>
+                    <th className="px-4 border font-bold text-left"></th>
                     <th className="px-4 text-left"></th>
                   </tr>
                 </thead>

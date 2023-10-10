@@ -7,12 +7,8 @@ import CashMemo from '../../Bill/CashMemo';
 import CircleLoader from '../../components/CircleLoader';
 
 const OtherProductAdd = () => {
-    const { data, allcompany, loading, selectedProduct,
+    const { data, loading,
         codeData, ProductData, handleOtherBill } = useContext(ApiContext);
-
-    // const handleProduct = (e) => {
-    //     handleProductChange(e)
-    // }
 
     const handleBillcreate = (e) => {
         handleOtherBill(e)

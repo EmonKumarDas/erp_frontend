@@ -17,7 +17,7 @@ const SentMessage = ({ modelOpen, setModelOpen, phoneNumber }) => {
         setLoading(true);
 
         // Send the message using a POST request to the server
-        fetch("http://localhost:5000/send-sms", {
+        fetch("https://admin-backend-eight-mu.vercel.app/send-sms", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

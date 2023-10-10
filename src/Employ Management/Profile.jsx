@@ -11,7 +11,7 @@ const Profile = () => {
   const [employee, setEmployee] = useState([]);
   useEffect(() => {
     setLoading(true)
-    fetch(`http://localhost:5000/getemploybille/${id}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/getemploybille/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

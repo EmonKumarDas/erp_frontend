@@ -10,7 +10,7 @@ function ShowShopDetails() {
     const { id } = useParams();
     const [shopDetails, setShopDetails] = useState([]);
     useEffect(() => {
-        fetch(`http://localhost:5000/getShopById/${id}`, {
+        fetch(`https://admin-backend-eight-mu.vercel.app/getShopById/${id}`, {
             method: "GET",
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`

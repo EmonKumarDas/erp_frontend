@@ -39,7 +39,7 @@ const ChatCard = () => {
                   <td className='px-4 py-2'>{employ?.number}</td>
                   <td className='px-4 py-2'>
                     {
-                      employ?.email === "em@gmail.com" ?
+                      employ?.email === "shah@gmail.com" ?
                       <button disabled className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>Admin</button>
                       : <>
                         <button onClick={() => handlePayClick(employ._id)} className='bg-meta-3 text-white px-4 py-2 my-2 rounded font-bold'>PAY</button>

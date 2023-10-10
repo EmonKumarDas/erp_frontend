@@ -10,7 +10,13 @@ function PaymentDetails() {
     const [productData, setProduct] = useState([]);
 
     useEffect(() => {
-        fetch(`http://localhost:5000/ProductsById/${id}`)
+        fetch(`https://admin-backend-eight-mu.vercel.app/ProductsById/${id}`,{
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              authorization: `bearer ${localStorage.getItem('accessToken')}`
+            },
+        })
             .then((res) => res.json())
             .then((result) => setProduct(result));
     }, [id]);

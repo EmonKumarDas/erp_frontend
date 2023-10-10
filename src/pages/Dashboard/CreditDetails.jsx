@@ -8,7 +8,7 @@ const CreditDetails = () => {
   const [bill, setBill] = useState({});
 
   useEffect(() => {
-    fetch(`http://localhost:5000/getBillById/${id}`,
+    fetch(`https://admin-backend-eight-mu.vercel.app/getBillById/${id}`,
     {
       method: 'GET',
       headers: {

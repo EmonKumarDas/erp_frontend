@@ -16,7 +16,13 @@ const Pos = () => {
         e.preventDefault(); // Prevent form submission and page reload
 
         try {
-            const response = await fetch(`http://localhost:5000/getProductsById/${barcode}`);
+            const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getProductsById/${barcode}`,{
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  authorization: `bearer ${localStorage.getItem('accessToken')}`
+                },
+            });
             if (response.ok) {
                 const data = await response.json();
                 setProductData(data);

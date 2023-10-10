@@ -5,7 +5,7 @@ function ViewBill() {
     const { id } = useParams();
     const [createdBill, setCreatedBill] = useState({})
     useEffect(() => {
-        fetch(`http://localhost:5000/getbills/${id}`, {
+        fetch(`https://admin-backend-eight-mu.vercel.app/getbills/${id}`, {
             method: 'GET',
             headers: {
                 authorization: `bearer ${localStorage.getItem('accessToken')}`

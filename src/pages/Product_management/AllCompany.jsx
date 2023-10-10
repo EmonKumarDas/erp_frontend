@@ -13,7 +13,7 @@ const AllCompany = () => {
 
         if (isConfirmed) {
             // Proceed with the delete operation if the user confirms
-            fetch(`http://localhost:5000/deleteCompany/${id}`, {
+            fetch(`https://admin-backend-eight-mu.vercel.app/deleteCompany/${id}`, {
                 method: 'DELETE',
                 headers: {
                     authorization: `bearer ${localStorage.getItem('accessToken')}`

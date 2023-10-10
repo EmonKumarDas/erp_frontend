@@ -50,18 +50,17 @@ function Creditor() {
                         <table className="table-auto w-full">
                             <thead>
                                 <tr>
-                                    {/* <th className="px-4 text-sm text-left">#</th> */}
-                                    <th className="px-4 text-sm text-left">Shop Name</th>
-                                    <th className="px-4 text-sm text-left">Product</th>
-                                    <th className="px-4 text-sm text-left">Watt</th>
-                                    <th className="px-4 text-sm text-left">Import</th>
-                                    <th className="px-4 text-sm text-left">Purchase Price</th>
-                                    <th className="px-4 text-sm text-left">Total Price</th>
-                                    <th className="px-4 text-sm text-left">Paid</th>
-                                    <th className="px-4 text-sm text-left">Remaining</th>
-                                    <th className="px-4 text-sm text-left">Month</th>
-                                    <th className="px-4 text-sm text-left">Company Name</th>
-                                    <th className="px-4 text-sm text-left">Action</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Shop Name</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Product</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Watt</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Import</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Purchase Price</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Total Price</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Paid</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Remaining</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Month</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Company Name</th>
+                                    <th className="px-4 border font-bold text-sm text-left">Action</th>
                                 </tr>
                             </thead>
                             <tbody>

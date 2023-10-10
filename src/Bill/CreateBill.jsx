@@ -7,7 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import CircleLoader from '../components/CircleLoader';
 
 const CreateBill = () => {
-    const { data, allcompany, loading, selectedProduct,stockIn,
+    const { data, allcompany, loading, selectedProduct, stockIn,
         handleProductChange, codeData, ProductData, handleBillcreating } = useContext(ApiContext);
 
     const handleProduct = (e) => {
@@ -31,7 +31,7 @@ const CreateBill = () => {
             }
         });
     });
-    
+
     const uniqueWatt = [];
     const uniqwatt = new Set();
     data.map((product) => {

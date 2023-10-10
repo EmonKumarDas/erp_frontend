@@ -10,10 +10,9 @@ import Credit from './Credit';
 import DateSelector from '../../DateSelector/DateSelector';
 
 const Analytics = () => {
-  const { loading, getTotalRevenueByDate, getTotalExpenseByDate, getTotalProductByDate, setSelected_Date, getMonthName, stockIn, StockOut } = useContext(ApiContext);
-
+  const { loading, getTotalRevenueByDate, originalPrice, getTotalExpenseByDate, getTotalProductByDate, setSelected_Date, getMonthName, stockIn, StockOut } = useContext(ApiContext);
   const getProductsExpense = getTotalProductByDate ? getTotalProductByDate : 0;
-  const total_Expense = getTotalExpenseByDate + getProductsExpense;
+  const total_Expense = getTotalExpenseByDate + getProductsExpense + originalPrice?.Origina_price;
 
   const totalQuantity = stockIn.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -39,7 +38,7 @@ const Analytics = () => {
 
       <div className="my-4">
       </div>
-     
+
       <DateSelector></DateSelector>
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5'>
 

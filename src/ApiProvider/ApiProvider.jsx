@@ -38,7 +38,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/getCodeCollection", {
+        const response = await fetch("https://admin-backend-eight-mu.vercel.app/getCodeCollection", {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -84,7 +84,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/getProducts`, {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getProducts`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`,
@@ -129,7 +129,7 @@ export const ApiProvider = ({ children }) => {
       email: user?.email
     }
     setLoading(true);
-    fetch("http://localhost:5000/addcompany", {
+    fetch("https://admin-backend-eight-mu.vercel.app/addcompany", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -171,7 +171,7 @@ export const ApiProvider = ({ children }) => {
     }
 
     setLoading(true);
-    fetch("http://localhost:5000/PostReturnProduct", {
+    fetch("https://admin-backend-eight-mu.vercel.app/PostReturnProduct", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -198,7 +198,7 @@ export const ApiProvider = ({ children }) => {
     }
 
     setLoading(true);
-    fetch("http://localhost:5000/addshop", {
+    fetch("https://admin-backend-eight-mu.vercel.app/addshop", {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -220,7 +220,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/getshop', {
+        const response = await fetch('https://admin-backend-eight-mu.vercel.app/getshop', {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -252,7 +252,7 @@ export const ApiProvider = ({ children }) => {
         if (!user?.email && !token) {
           return;
         }
-        const response = await fetch(`http://localhost:5000/getCompany/${user?.email}`, {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getCompany/${user?.email}`, {
           method: "GET",
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -290,7 +290,7 @@ export const ApiProvider = ({ children }) => {
   const handleProductDelete = (id) => {
 
     setLoading(true);
-    fetch(`http://localhost:5000/deleteProduct/${id}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/deleteProduct/${id}`, {
       method: 'DELETE'
     })
       .then(res => res.json())
@@ -308,7 +308,7 @@ export const ApiProvider = ({ children }) => {
 
   const handleshopDelete = (id) => {
     setLoading(true);
-    fetch(`http://localhost:5000/deleteshop/${id}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/deleteshop/${id}`, {
       method: 'DELETE'
     })
       .then(res => res.json())
@@ -357,7 +357,7 @@ export const ApiProvider = ({ children }) => {
 
     setLoading(true);
 
-    fetch("http://localhost:5000/getTotalProduct", {
+    fetch("https://admin-backend-eight-mu.vercel.app/getTotalProduct", {
       method: "GET",
       headers: {
         authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -367,7 +367,7 @@ export const ApiProvider = ({ children }) => {
       .then(results => {
         if (results.length === 0) {
 
-          fetch("http://localhost:5000/totalProduct", {
+          fetch("https://admin-backend-eight-mu.vercel.app/totalProduct", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -395,7 +395,7 @@ export const ApiProvider = ({ children }) => {
 
             const newQuantity = { quantity: quantity + (foundItem?.quantity || 0) };
             // Update the quantity using the API endpoint
-            fetch(`http://localhost:5000/UpdateProductQuantity/${foundItem._id}`, {
+            fetch(`https://admin-backend-eight-mu.vercel.app/UpdateProductQuantity/${foundItem._id}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'
@@ -410,7 +410,7 @@ export const ApiProvider = ({ children }) => {
           } else {
 
             // Create a new totalProduct using the API endpoint
-            fetch("http://localhost:5000/totalProduct", {
+            fetch("https://admin-backend-eight-mu.vercel.app/totalProduct", {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -431,7 +431,7 @@ export const ApiProvider = ({ children }) => {
 
     // -------------********get total product end*********------------------------
 
-    fetch("http://localhost:5000/addProducts", {
+    fetch("https://admin-backend-eight-mu.vercel.app/addProducts", {
 
       method: 'POST',
       headers: {
@@ -459,7 +459,7 @@ export const ApiProvider = ({ children }) => {
       return;
     }
     if (selectedProduct) {
-      fetch(`http://localhost:5000/getProductsByProductName/${selectedProduct}`, {
+      fetch(`https://admin-backend-eight-mu.vercel.app/getProductsByProductName/${selectedProduct}`, {
         method: 'GET',
         headers: {
           authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -496,7 +496,7 @@ export const ApiProvider = ({ children }) => {
     setLoading(true);
 
     try {
-      const response1 = await fetch(`http://localhost:5000/getProductsByProductNameAndWatt/${productname}/${watt}`, {
+      const response1 = await fetch(`https://admin-backend-eight-mu.vercel.app/getProductsByProductNameAndWatt/${productname}/${watt}`, {
         method: 'GET',
         headers: {
           authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -519,7 +519,7 @@ export const ApiProvider = ({ children }) => {
         total
       };
 
-      const response2 = await fetch(`http://localhost:5000/getProductsByPnameComNameWatt/${productname.toLowerCase()}/${watt.toLowerCase()}/${company.toLowerCase()}`, {
+      const response2 = await fetch(`https://admin-backend-eight-mu.vercel.app/getProductsByPnameComNameWatt/${productname.toLowerCase()}/${watt.toLowerCase()}/${company.toLowerCase()}`, {
         method: 'GET',
         headers: {
           authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -535,7 +535,7 @@ export const ApiProvider = ({ children }) => {
 
         const existedQuantity = (data[0].quantity || 0) - quantity;
 
-        const response3 = await fetch(`http://localhost:5000/UpdateProductQuantity/${data[0]._id}`, {
+        const response3 = await fetch(`https://admin-backend-eight-mu.vercel.app/UpdateProductQuantity/${data[0]._id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -614,7 +614,7 @@ export const ApiProvider = ({ children }) => {
       setLoading(true);
 
       // Make API call to create the bill
-      const response = await fetch("http://localhost:5000/createBill", {
+      const response = await fetch("https://admin-backend-eight-mu.vercel.app/createBill", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
@@ -652,7 +652,7 @@ export const ApiProvider = ({ children }) => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/getBill/${user?.email}`, {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getBill/${user?.email}`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -690,7 +690,7 @@ export const ApiProvider = ({ children }) => {
     if (!user?.email) {
       return
     }
-    fetch(`http://localhost:5000/getBill/${user?.email}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/getBill/${user?.email}`, {
       method: 'GET',
       headers: {
         authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -749,7 +749,7 @@ export const ApiProvider = ({ children }) => {
           setLoading(false)
         }
         else {
-          fetch("http://localhost:5000/addUser", {
+          fetch("https://admin-backend-eight-mu.vercel.app/addUser", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -784,7 +784,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/getBill/${user?.email}`,
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getBill/${user?.email}`,
           {
             method: 'GET',
             headers: {
@@ -811,7 +811,7 @@ export const ApiProvider = ({ children }) => {
   // --------------------------------get created bills data----------------------------------
 
   const getBillByID = (id) => {
-    return fetch(`http://localhost:5000/getbills/${id}`,
+    return fetch(`https://admin-backend-eight-mu.vercel.app/getbills/${id}`,
       {
         method: 'GET',
         headers: {
@@ -851,10 +851,11 @@ export const ApiProvider = ({ children }) => {
       //setLoading(false);
     } else {
       //setLoading(true);
-      fetch("http://localhost:5000/addUser", {
+      fetch("https://admin-backend-eight-mu.vercel.app/addUser", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          authorization: `bearer ${localStorage.getItem('accessToken')}`
         },
         body: JSON.stringify(formData)
       })
@@ -875,7 +876,7 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/getUsers", {
+        const response = await fetch("https://admin-backend-eight-mu.vercel.app/getUsers", {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -913,7 +914,7 @@ export const ApiProvider = ({ children }) => {
     }
 
     setLoading(true);
-    fetch("http://localhost:5000/paybill", {
+    fetch("https://admin-backend-eight-mu.vercel.app/paybill", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -943,7 +944,7 @@ export const ApiProvider = ({ children }) => {
     }
 
     setLoading(true);
-    fetch("http://localhost:5000/payshopbill", {
+    fetch("https://admin-backend-eight-mu.vercel.app/payshopbill", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -965,7 +966,7 @@ export const ApiProvider = ({ children }) => {
     const month = get_date.slice(0, 7);
     const year = get_date.split("-")[0];
     setLoading(true);
-    fetch(`http://localhost:5000/getProductById/${product_id}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/getProductById/${product_id}`, {
       method: 'GET',
       headers: {
         authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -984,7 +985,7 @@ export const ApiProvider = ({ children }) => {
         advance, updatePayamount
       }
 
-      fetch(`http://localhost:5000/Upadate_Product_Remaining_Balance/${product_id}`, {
+      fetch(`https://admin-backend-eight-mu.vercel.app/Upadate_Product_Remaining_Balance/${product_id}`, {
         method: "PUT",
         headers: {
           "content-type": "application/json",
@@ -1060,7 +1061,7 @@ export const ApiProvider = ({ children }) => {
     const paybill = { advance: totalpay, newbalance };
 
     setLoading(true);
-    fetch(`http://localhost:5000/getbills/${customarbill?._id}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/getbills/${customarbill?._id}`, {
       method: 'GET',
       headers: {
         authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1070,7 +1071,7 @@ export const ApiProvider = ({ children }) => {
       const get_current_data = { advance, month, date, year }
       const get_update_date = [...get_advance_by_date, get_current_data]
 
-      fetch(`http://localhost:5000/UpdateProductbill/${customarbill?._id}`, {
+      fetch(`https://admin-backend-eight-mu.vercel.app/UpdateProductbill/${customarbill?._id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -1106,7 +1107,12 @@ export const ApiProvider = ({ children }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/getStoreProductDate/${getDate}`, {
+        if (!getDate) {
+          // If getDate is not loaded yet, return early and don't execute the rest of the code
+          return;
+        }
+
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getStoreProductDate/${getDate}`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1126,7 +1132,6 @@ export const ApiProvider = ({ children }) => {
         // Handle the error here
         console.error("An error occurred:", error);
       }
-
     };
 
     fetchData(); // Fetch data immediately on mount
@@ -1140,21 +1145,28 @@ export const ApiProvider = ({ children }) => {
   }, [getSelectedDate, getDate, user]);
 
 
+
   // --------------------------------get Total Revenue By Date-------------------------------------
 
   const [getTotalExpenseByDate, setGetTotalExpenseByDate] = useState();
   const [getTotalExpenseByDateInInteger, setGetTotalExpenseByDateInInteger] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
+        if (!getDate) {
+          // If getDate is not loaded yet, return early and don't execute the rest of the code
+          return;
+        }
+
         const [productResponse, employeePaymentResponse] = await Promise.all([
-          fetch(`http://localhost:5000/getProductsByDate/${getDate}`, {
+          fetch(`https://admin-backend-eight-mu.vercel.app/getProductsByDate/${getDate}`, {
             method: 'GET',
             headers: {
               authorization: `bearer ${localStorage.getItem('accessToken')}`
             }
           }),
-          fetch(`http://localhost:5000/getemploypaymentbydate/${getDate}`, {
+          fetch(`https://admin-backend-eight-mu.vercel.app/getemploypaymentbydate/${getDate}`, {
             method: 'GET',
             headers: {
               authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1169,22 +1181,23 @@ export const ApiProvider = ({ children }) => {
 
         for (let i = 0; i < employPayment.length; i++) {
           totalPayment += employPayment[i]?.pay + employPayment[i]?.otherbill;
-
         }
-        fetch(`http://localhost:5000/getStoreProductDate/${getDate}`, {
+
+        fetch(`https://admin-backend-eight-mu.vercel.app/getStoreProductDate/${getDate}`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
           }
-        }).then(res => res.json()).then(result => {
-          const getOriginalPrice = result?.getOriginalPrice ? result.getOriginalPrice : 0;
-          const productsbuy = productData.totalAdvance;
-          const totalExpence = totalPayment + productsbuy + getOriginalPrice;
-          const getExpence = scode === "false" ? totalExpence / 2 : totalExpence;
-          setGetTotalExpenseByDateInInteger(totalExpence);
-          setGetTotalExpenseByDate(getExpence);
-        }
-        )
+        })
+          .then(res => res.json())
+          .then(result => {
+            const getOriginalPrice = result?.getOriginalPrice ? result.getOriginalPrice : 0;
+            const productsbuy = productData.totalAdvance;
+            const totalExpence = totalPayment + productsbuy + getOriginalPrice;
+            const getExpence = scode === "false" ? totalExpence / 2 : totalExpence;
+            setGetTotalExpenseByDateInInteger(totalExpence);
+            setGetTotalExpenseByDate(getExpence);
+          });
       } catch (error) {
         console.error(error);
       }
@@ -1197,9 +1210,7 @@ export const ApiProvider = ({ children }) => {
 
     // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
-
   }, [getSelectedDate, get_Date, getDate, user]);
-
 
 
 
@@ -1210,43 +1221,43 @@ export const ApiProvider = ({ children }) => {
 
   const [getTotalProductByDate, setGetTotalProductByDate] = useState();
 
-useEffect(() => {
-  // This inner useEffect watches the getDate variable
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/getShopPaymentByDate/${user?.email}/${getDate}`, {
-        method: 'GET',
-        headers: {
-          authorization: `bearer ${localStorage.getItem('accessToken')}`
+  useEffect(() => {
+    // This inner useEffect watches the getDate variable
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getShopPaymentByDate/${user?.email}/${getDate}`, {
+          method: 'GET',
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+        const result = await response.json();
 
-      const result = await response.json();
-
-      if (result.length !== 0) {
-        let shopPayment = 0;
-        for (let i = 0; i < result.length; i++) {
-          shopPayment += result[i].total;
+        if (result.length !== 0) {
+          let shopPayment = 0;
+          for (let i = 0; i < result.length; i++) {
+            shopPayment += result[i].total;
+          }
+          const getExpence = scode === "false" ? shopPayment / 2 : shopPayment;
+          setGetTotalProductByDate(getExpence);
+        } else {
+          setGetTotalProductByDate(0);
         }
-        const getExpence = scode === "false" ? shopPayment / 2 : shopPayment;
-        setGetTotalProductByDate(getExpence);
-      } else {
-        setGetTotalProductByDate(0);
+      } catch (error) {
+        // Handle the error here
+        console.error("An error occurred:", error);
       }
-    } catch (error) {
-      // Handle the error here
-      console.error("An error occurred:", error);
+    };
+
+    if (getDate) {
+      fetchData(); // Only execute fetchData if getDate is truthy (loaded)
     }
-  };
-
-  if (getDate) {
-    fetchData(); // Only execute fetchData if getDate is truthy (loaded)
-  }
-}, [getSelectedDate, user, getDate]);
+  }, [getSelectedDate, user, getDate]);
 
 
 
@@ -1258,7 +1269,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchTotalProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/getTotalProduct/${user?.email}`, {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getTotalProduct/${user?.email}`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1289,7 +1300,7 @@ useEffect(() => {
   useEffect(() => {
     const fetchReturnProducts = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/ReturnProductCollection/${user?.email}`, {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/ReturnProductCollection/${user?.email}`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1318,24 +1329,38 @@ useEffect(() => {
   const [sellOut, setSellOut] = useState([]);
 
   useEffect(() => {
-    try {
-      fetch(`http://localhost:5000/getSellByDate/${getDate}`, {
-        method: 'GET',
-        headers: {
-          authorization: `bearer ${localStorage.getItem('accessToken')}`
+    const fetchData = async () => {
+      try {
+        if (!getDate) {
+          // If getDate is not loaded yet, return early and don't execute the rest of the code
+          return;
         }
-      })
-        .then((res) => res.json())
-        .then((result) => {
 
-          setSellOut(result);
-        })
-        .catch((error) => {
-          console.error(error); // Handle errors here
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getSellByDate/${getDate}`, {
+          method: 'GET',
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
         });
-    } catch (error) {
-      console.error(error);
-    }
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setSellOut(result);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
+
+    fetchData(); // Fetch data immediately on mount
+
+    // Set up an interval to fetch data every 5 seconds (5000 milliseconds)
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
   }, [getSelectedDate, month, getDate]);
 
   const StockOut = sellOut?.reduce((acc, curr) => {
@@ -1347,6 +1372,7 @@ useEffect(() => {
     );
   }, 0);
 
+
   // ----------------------------end of total stockout----------------------------------------
   const [GetReturnProducts, setGetReturnProducts] = useState([]);
   useEffect(() => {
@@ -1356,7 +1382,7 @@ useEffect(() => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/getReturnProducts`, {
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getReturnProducts`, {
           method: 'GET',
           headers: {
             authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1412,7 +1438,7 @@ useEffect(() => {
 
     setLoading(true);
 
-    fetch(`http://localhost:5000/getTotalProduct/${user?.email}`, {
+    fetch(`https://admin-backend-eight-mu.vercel.app/getTotalProduct/${user?.email}`, {
       method: "GET",
       headers: {
         authorization: `bearer ${localStorage.getItem('accessToken')}`
@@ -1421,7 +1447,7 @@ useEffect(() => {
       .then(res => res.json())
       .then(results => {
         if (results.length === 0) {
-          fetch("http://localhost:5000/totalProduct", {
+          fetch("https://admin-backend-eight-mu.vercel.app/totalProduct", {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -1464,7 +1490,7 @@ useEffect(() => {
           if (foundItem) {
             const newQuantity = { quantity: quantity + (foundItem?.quantity || 0) };
             // Update the quantity using the API endpoint
-            fetch(`http://localhost:5000/UpdateProductQuantity/${foundItem._id}`, {
+            fetch(`https://admin-backend-eight-mu.vercel.app/UpdateProductQuantity/${foundItem._id}`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json'
@@ -1495,7 +1521,7 @@ useEffect(() => {
           else {
 
             // Create a new totalProduct using the API endpoint
-            fetch("http://localhost:5000/totalProduct", {
+            fetch("https://admin-backend-eight-mu.vercel.app/totalProduct", {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -1545,7 +1571,7 @@ useEffect(() => {
       const getProducts = { ...newProducts, products, payamount };
       setLoading(true);
 
-      fetch("http://localhost:5000/AddCompanyProducts", {
+      fetch("https://admin-backend-eight-mu.vercel.app/AddCompanyProducts", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -1576,6 +1602,8 @@ useEffect(() => {
     const Discount = e.target.Discount.value;
     const OriginalPrice = e.target.OriginalPrice.value;
     const storeProductDate = e.target.date.value;
+    const storeProductMonth = truncateDate(storeProductDate)
+    const storePrudctYear = sliceDate(storeProductDate)
     const quantity = e.target.quantity.value;
     const company = e.target.company.value;
     const watt = e.target.watt.value;
@@ -1590,7 +1618,8 @@ useEffect(() => {
       email: user?.email,
       productname,
       storeProductDate,
-      storedateMonth: truncateDate(storeProductDate),
+      storeProductMonth,
+      storePrudctYear,
       originalPrice: OriginalPrice * quantity,
       PurchasePrice,
       Discount,
@@ -1608,6 +1637,46 @@ useEffect(() => {
     localStorage.setItem('billData', JSON.stringify(updatedData));
 
   };
+
+  const [originalPrice, setOriginalPrice] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!getDate) {
+          // If getDate is not loaded yet, return early and don't execute the rest of the code
+          return;
+        }
+
+        const response = await fetch(`https://admin-backend-eight-mu.vercel.app/getProductsOriginalPrice/${getDate}`, {
+          method: 'GET',
+          headers: {
+            authorization: `bearer ${localStorage.getItem('accessToken')}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        setOriginalPrice(result);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
+
+    fetchData(); // Fetch data immediately on mount
+
+    // Set up an interval to fetch data every 5 seconds (5000 milliseconds)
+    const intervalId = setInterval(fetchData, 5000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, [getSelectedDate, getDate]);
+
+  // Now you can use the 'originalPrice' state as needed in your component
+
 
   return (
     <ApiContext.Provider value={{
@@ -1627,6 +1696,7 @@ useEffect(() => {
       getTotalSaleByDate,
       getTotalProductByDate,
       shop,
+      originalPrice,
       handleUpdatePaybill,
       handleProductChange,
       ProductData,
